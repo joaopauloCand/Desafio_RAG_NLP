@@ -1,0 +1,6 @@
+*.venv
+*.env
+json_parsed/*
+json_teste/*
+chunks/*
+*.csv
