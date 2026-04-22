@@ -16,37 +16,46 @@ load_dotenv()  # Carrega variáveis de ambiente do arquivo .env, se existir
 
 def consultar_assistente_aneel(pergunta_usuario):
     # ---------------------------------------------------------
-    # FASE 1: BUSCA HÍBRIDA DIRETA (Sem o Estagiário MultiQuery)
+    # FASE 1: A BUSCA DEFINITIVA (MultiQuery + Híbrida)
     # ---------------------------------------------------------
+    
     caminho_banco = "meu_banco_chroma_markdown"
 
     embeddings_google = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
     banco_vetorial = Chroma(persist_directory=caminho_banco, embedding_function=embeddings_google)
     
     dados_chroma = banco_vetorial.get() 
+    if len(dados_chroma['ids']) == 0:
+        raise ValueError(f"❌ ERRO FATAL: O banco no caminho '{caminho_banco}' está VAZIO!")
 
-    # 1. BM25 (Elasticsearch Local) - O Especialista em Nomes Exatos
+    # 1. Configurando o BM25 (Elasticsearch local)
     documentos_para_bm25 = []
     for i in range(len(dados_chroma['ids'])):
         doc = Document(page_content=dados_chroma['documents'][i], metadata=dados_chroma['metadatas'][i])
         documentos_para_bm25.append(doc)
         
-    # Coloque k=4 aqui para garantir que ele puxe a "Usina A" e a "Usina B"
     retriever_palavra_chave = BM25Retriever.from_documents(documentos_para_bm25)
-    retriever_palavra_chave.k = 4 
+    retriever_palavra_chave.k = 3 # Reduzimos para 3 para economizar tokens
     
-    # 2. ChromaDB - O Especialista em Contexto
-    retriever_vetorial = banco_vetorial.as_retriever(search_kwargs={"k": 4})
+    # 2. Configurando o Chroma (Vetores)
+    retriever_vetorial = banco_vetorial.as_retriever(search_kwargs={"k": 3})
     
-    # 3. O Gerente
-    # Damos 60% de peso para a palavra exata (BM25), pois em despachos o nome da usina/CNPJ importa mais que a semântica
+    # 3. O GERENTE HÍBRIDO (Junta os dois acima)
     retriever_hibrido = EnsembleRetriever(
-        retrievers=[retriever_palavra_chave, retriever_vetorial],
-        weights=[0.6, 0.4] 
+        retrievers=[retriever_vetorial, retriever_palavra_chave],
+        weights=[0.5, 0.5]
     )
     
-    print("🔎 Realizando Busca Híbrida Direta...")
-    documentos_recuperados = retriever_hibrido.invoke(pergunta_usuario)
+    # 4. A CAMADA FINAL: MULTI-QUERY (O LLM que quebra as perguntas)
+    llm_estagiario = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.0)
+    
+    retriever_supremo = MultiQueryRetriever.from_llm(
+        retriever=retriever_hibrido, # <-- Passamos o gerente híbrido para ele!
+        llm=llm_estagiario
+    )
+    
+    print("🔎 Quebrando a pergunta e acionando busca Vetorial e Léxica...")
+    documentos_recuperados = retriever_supremo.invoke(pergunta_usuario)
     
     # Extraímos apenas o texto dos chunks e juntamos tudo em uma única string
     textos_extraidos = [doc.page_content for doc in documentos_recuperados]
