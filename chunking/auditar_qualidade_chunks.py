@@ -30,7 +30,7 @@ def auditar_jsonl(caminho_arquivo):
     return total_linhas
 
 def main():
-    caminho_arquivo = "chunks\\chunks_recursive.jsonl" # Altere para o caminho do seu arquivo JSONL
+    caminho_arquivo = "chunking\chunks\chunks_markdown.jsonl" # Altere para o caminho do seu arquivo JSONL
     auditar_jsonl(caminho_arquivo)
 
 # Rode isso após gerar seu arquivo

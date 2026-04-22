@@ -3,7 +3,8 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
 
 load_dotenv()  # Carrega variáveis de ambiente do arquivo .env, se existir
-
+#testar a busca no banco vetorial, sem passar pelo LLM. Apenas para validar se os documentos estão sendo recuperados corretamente.
+#similarity_search
 def testar_recuperacao():
     # 1. Carregamos o mesmo modelo de matemática que usamos antes
     embeddings_google = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")

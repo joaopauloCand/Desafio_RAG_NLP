@@ -26,9 +26,9 @@ def carregar_chunks_do_disco(caminho_arquivo):
 def criar_banco_vetorial():
     # Usando o modelo correto para a chave gratuita
     embeddings_google = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
-    meus_documentos = carregar_chunks_do_disco("chunking\\chunks\\chunks_recursive.jsonl")
+    meus_documentos = carregar_chunks_do_disco("chunking\\chunks\\chunks_markdown.jsonl")
     
-    pasta_do_banco = "./meu_banco_chroma"
+    pasta_do_banco = "./meu_banco_chroma_markdown"
     
     print(f"Preparando o banco vetorial em: {pasta_do_banco}")
     banco_vetorial = Chroma(
