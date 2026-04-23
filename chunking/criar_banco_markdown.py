@@ -118,7 +118,7 @@ def main():
     
     Path(arquivo_saida).parent.mkdir(parents=True, exist_ok=True)
     
-    #o que já foi processado em execuções anteriores
+    #o que já foi processado em execuções anteriores by: kelvin
     ja_processados = carregar_processados(arquivo_log)
     print(f"Arquivos já processados em execuções anteriores: {len(ja_processados)}")
     
@@ -131,7 +131,7 @@ def main():
     arquivos_erro_json = []
     
     for caminho_json in arquivos_json:
-        # verifica oq ja foi processado e pula eles
+        # verifica oq ja foi processado e pula eles by: kelvin
         if caminho_json.name in ja_processados:
             arquivos_pulados += 1
             continue
