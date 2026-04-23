@@ -106,6 +106,15 @@ def main():
     pasta_json = Path("json_teste")  # depois adaptar para todo o conjunto de dados!!
     arquivo_saida = "chunks/chunks_markdown.jsonl"
     arquivo_log = "chunks/processados.log"
+
+    log_existe = Path(arquivo_log).exists()
+    jsonl_existe = Path(arquivo_saida).exists()
+
+    if jsonl_existe and not log_existe:
+        raise RuntimeError(
+            f"Inconsistência detectada: '{arquivo_saida}' existe mas '{arquivo_log}' não. "
+            f"Apague o JSONL ou restaure o log para evitar duplicação."
+    )
     
     Path(arquivo_saida).parent.mkdir(parents=True, exist_ok=True)
     
