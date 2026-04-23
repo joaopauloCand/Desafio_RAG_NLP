@@ -1,6 +1,7 @@
 import json
 
-def auditar_jsonl(caminho_arquivo):
+def auditar_jsonl(caminho_arquivo: str) -> int:
+    """Audita a integridade do arquivo JSONL, contando quantos chunks estão perfeitamente formatados e alertando sobre quaisquer linhas corrompidas."""
     total_linhas = 0
     linhas_corrompidas = 0
 
@@ -25,14 +26,15 @@ def auditar_jsonl(caminho_arquivo):
     if linhas_corrompidas > 0:
         print(f"❌ Atenção: {linhas_corrompidas} blocos estão corrompidos.")
     else:
-        print("🚀 Status: 100% Seguro. Pronto para a fase de Embeddings!")
+        print("✅ Status: 100% Seguro. Pronto para a fase de Embeddings!")
         
     return total_linhas
 
 def main():
-    caminho_arquivo = "chunking\chunks\chunks_markdown.jsonl" # Altere para o caminho do seu arquivo JSONL
+    caminho_arquivo = "chunking\\chunks\\chunks_markdown.jsonl" # <-- Altere para o caminho do seu arquivo JSONL
     auditar_jsonl(caminho_arquivo)
 
-# Rode isso após gerar seu arquivo
+#Rode esse script para verificar a integridade dos seus chunks antes de avançar para a fase de embeddings. 
+# Ele irá contar quantos chunks estão perfeitamente formatados e alertar sobre quaisquer linhas corrompidas.
 if __name__ == "__main__":
     main()

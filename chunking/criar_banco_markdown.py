@@ -2,7 +2,8 @@ import json
 from pathlib import Path
 from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
 
-def processar_json_aneel_markdown(json_data):
+def processar_json_aneel_markdown(json_data: dict) -> list:
+    """Processa um JSON da ANEEL, extraindo o conteúdo Markdown e gerando chunks com metadados enriquecidos."""
     chunks_totais = []
     
     # 1. Extraímos as informações globais e guardamos diretamente nos METADADOS
@@ -23,7 +24,7 @@ def processar_json_aneel_markdown(json_data):
     ]
     markdown_splitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers_para_fatiar)
     
-    # 3. Configuração do Splitter de Segurança (O seu Recursive)
+    # 3. Configuração do Splitter de Segurança (Recursive), evitando chunks muito grandes
     recursive_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1024,
         chunk_overlap=154,
@@ -64,14 +65,13 @@ def processar_json_aneel_markdown(json_data):
             
     return chunks_totais
 
-def salvar_chunks_em_disco(lista_de_chunks, caminho_arquivo="chunks/chunks_markdown.jsonl"):
-    """
-    Salva os chunks no disco, garantindo que a pasta exista.
-    """
+def salvar_chunks_em_disco(lista_de_chunks: list, caminho_arquivo:str="chunks/chunks_markdown.jsonl") -> None:
+    """Salva os chunks no disco, garantindo que a pasta exista."""
     # Cria a pasta 'chunks' automaticamente se ela não existir
     caminho_path = Path(caminho_arquivo)
     caminho_path.parent.mkdir(parents=True, exist_ok=True)
     
+    # Salva os chunks no formato JSONL, onde cada linha é um JSON representando um chunk
     with open(caminho_path, 'a', encoding='utf-8') as f:
         for chunk in lista_de_chunks:
             chunk_dict = {
@@ -86,7 +86,7 @@ def main():
     total_chunks_gerados = 0
     arquivos_erro_json = []
     
-    pasta_json = Path("json_teste")
+    pasta_json = Path("json_teste") # Certifique-se de que esta pasta existe e contém os arquivos JSON a serem processados
     arquivos_json = sorted(pasta_json.glob("*.json"))
     
     arquivo_saida = "chunks/chunks_markdown.jsonl"
@@ -95,7 +95,7 @@ def main():
             with open(caminho_json, 'r', encoding='utf-8') as f:
                 json_data = json.load(f)
                 
-            chunks = processar_json_aneel_markdown(json_data)
+            chunks = processar_json_aneel_markdown(json_data) # Processa o JSON e gera os chunks
             
             if chunks: # Só salva se o documento gerou algum conteúdo
                 salvar_chunks_em_disco(chunks, arquivo_saida)
@@ -115,6 +115,7 @@ def main():
     print(f"Arquivos com falha: {arquivos_falha}")
     print(f"Total de chunks salvos no JSONL: {total_chunks_gerados}")
     
+    # Se houver arquivos que causaram erro, salva seus nomes em um arquivo de texto para análise posterior
     if arquivos_erro_json:
         with open("erros_processamento.txt", 'w', encoding='utf-8') as f:
             for nome_arquivo in arquivos_erro_json:

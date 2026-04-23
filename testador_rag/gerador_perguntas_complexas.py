@@ -8,7 +8,8 @@ from langchain_core.prompts import PromptTemplate
 
 load_dotenv()  # Carrega variáveis de ambiente do arquivo .env, se existir
 
-def carregar_textos_dos_jsons(pasta_arquivos, limite=50):
+def carregar_textos_dos_jsons(pasta_arquivos: str, limite:int=50) -> list[dict]:
+    """Carrega os textos dos arquivos JSON da pasta especificada."""
     documentos = []
     print(f"Buscando arquivos na pasta '{pasta_arquivos}'...")
     arquivos = [f for f in os.listdir(pasta_arquivos) if f.endswith('.json')][:limite]
@@ -28,10 +29,11 @@ def carregar_textos_dos_jsons(pasta_arquivos, limite=50):
     print(f"{len(documentos)} documentos carregados.")
     return documentos
 
-def gerar_perguntas_multihop():
+def gerar_perguntas_multihop() -> None:
+    """Função principal que gera perguntas complexas de múltiplos saltos (Multi-hop) a partir dos documentos da ANEEL."""
     llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.4)
     
-    # O novo prompt força a IA a cruzar as informações
+    # prompt força a IA a cruzar as informações
     template = """Você é um Engenheiro de Dados Sênior testando um sistema RAG.
     Abaixo, forneço um lote com {num_docs} documentos diferentes da ANEEL.
     

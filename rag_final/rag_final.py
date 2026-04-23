@@ -1,22 +1,17 @@
-import os
-
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.prompts import PromptTemplate
 from dotenv import load_dotenv
-from langchain_classic.retrievers.multi_query import MultiQueryRetriever
-# Novos imports
 from langchain_community.retrievers import BM25Retriever
 from langchain_classic.retrievers import EnsembleRetriever
 from langchain_core.documents import Document
 
-
-# Isso faz o terminal imprimir as sub-perguntas que a IA gerar
 load_dotenv()  # Carrega variáveis de ambiente do arquivo .env, se existir
 
-def consultar_assistente_aneel(pergunta_usuario):
+def consultar_assistente_aneel(pergunta_usuario: str) -> tuple[str, list[Document]]:
+    """Função principal que orquestra a consulta ao assistente especializado da ANEEL."""
     # ---------------------------------------------------------
-    # FASE 1: BUSCA HÍBRIDA DIRETA (Sem o Estagiário MultiQuery)
+    # FASE 1: BUSCA HÍBRIDA DIRETA
     # ---------------------------------------------------------
     caminho_banco = "meu_banco_chroma_markdown"
 
@@ -25,18 +20,20 @@ def consultar_assistente_aneel(pergunta_usuario):
     
     dados_chroma = banco_vetorial.get() 
 
-    # 1. BM25 (Elasticsearch Local) - O Especialista em Nomes Exatos
+    # 1. BM25 (Elasticsearch Local)
     documentos_para_bm25 = []
     for i in range(len(dados_chroma['ids'])):
         doc = Document(page_content=dados_chroma['documents'][i], metadata=dados_chroma['metadatas'][i])
         documentos_para_bm25.append(doc)
         
-    # Coloque k=4 aqui para garantir que ele puxe a "Usina A" e a "Usina B"
     retriever_palavra_chave = BM25Retriever.from_documents(documentos_para_bm25)
-    retriever_palavra_chave.k = 4 
+    retriever_palavra_chave.k = 6 # Busca os 6 documentos mais relevantes segundo o BM25 (palavra-chave) para garantir que termos exatos sejam priorizados, especialmente nomes de usinas e CNPJs.
     
-    # 2. ChromaDB - O Especialista em Contexto
-    retriever_vetorial = banco_vetorial.as_retriever(search_kwargs={"k": 4})
+    # 2. ChromaDB - utilizando mmr para trazer diversidade sem perder relevância
+    retriever_vetorial = banco_vetorial.as_retriever(
+        search_type="mmr", 
+        search_kwargs={"k": 6, "fetch_k": 20}
+    )
     
     # 3. O Gerente
     # Damos 60% de peso para a palavra exata (BM25), pois em despachos o nome da usina/CNPJ importa mais que a semântica
@@ -83,7 +80,6 @@ def consultar_assistente_aneel(pergunta_usuario):
     # Instanciamos o LLM de texto do Google
     llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
     
-    # temperature=0.2 deixa a IA mais "fria" e analítica (ideal para dados exatos)
     resposta = llm.invoke(prompt_final)
     
     return resposta.content, documentos_recuperados
@@ -91,7 +87,8 @@ def consultar_assistente_aneel(pergunta_usuario):
 # ==========================================
 # TESTANDO O PIPELINE COMPLETO
 # ==========================================
-if __name__ == "__main__":
+
+def main():
     pergunta = "Qual é o montante de garantia física de energia definido para a Central Geradora Hidrelétrica CGH Enercol, e qual é a sua potência instalada?"
     
     resposta_texto, fontes_utilizadas = consultar_assistente_aneel(pergunta)
@@ -105,7 +102,7 @@ if __name__ == "__main__":
     print("📚 FONTES UTILIZADAS PARA ESTA RESPOSTA:")
     print("-"*50)
     
-    # Um bom RAG sempre mostra de onde tirou a informação!
+    # Mostra de onde tirou a informação, evita repetir o mesmo documento várias vezes caso ele tenha gerado múltiplos chunks
     ids_vistos = set()
     for doc in fontes_utilizadas:
         id_doc = doc.metadata.get('id_processo', 'ID Desconhecido')
@@ -114,3 +111,6 @@ if __name__ == "__main__":
         if id_doc not in ids_vistos:
             print(f"📄 Documento: {id_doc} | Link: {url}")
             ids_vistos.add(id_doc)
+
+if __name__ == "__main__":
+    main()

@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import argparse
 import random
 import shutil
 from pathlib import Path
-
 
 def selecionar_arquivos_aleatorios(
     pasta_origem: Path,
@@ -12,6 +10,7 @@ def selecionar_arquivos_aleatorios(
     quantidade: int = 50,
     seed: int | None = None,
 ) -> list[Path]:
+    """Seleciona arquivos JSON aleatórios de uma pasta de origem e os copia para uma pasta de destino."""
     if not pasta_origem.exists():
         raise FileNotFoundError(f"Pasta de origem não encontrada: {pasta_origem}")
 
@@ -36,46 +35,19 @@ def selecionar_arquivos_aleatorios(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Seleciona arquivos JSON aleatórios de json_parsed e copia para json_teste."
-    )
-    parser.add_argument(
-        "--origem",
-        type=Path,
-        default=Path("json_parsed"),
-        help="Pasta com os arquivos JSON de origem.",
-    )
-    parser.add_argument(
-        "--destino",
-        type=Path,
-        default=Path("json_teste"),
-        help="Pasta onde as cópias serão salvas.",
-    )
-    parser.add_argument(
-        "--quantidade",
-        type=int,
-        default=50,
-        help="Quantidade de arquivos a copiar.",
-    )
-    parser.add_argument(
-        "--seed",
-        type=int,
-        default=None,
-        help="Semente opcional para tornar a seleção reproduzível.",
-    )
-    args = parser.parse_args()
-
     selecionados = selecionar_arquivos_aleatorios(
-        pasta_origem=args.origem,
-        pasta_destino=args.destino,
-        quantidade=args.quantidade,
+        pasta_origem=Path("json_parsed"),
+        pasta_destino=Path("json_teste"),
+        quantidade=50,
         seed=500,  # Semente fixa para garantir a mesma seleção em execuções futuras
     )
 
-    print(f"{len(selecionados)} arquivo(s) copiado(s) para '{args.destino}':")
+    # Imprime os arquivos selecionados para o usuário
+    print(f"{len(selecionados)} arquivo(s) copiado(s) para '{Path("json_teste")}':")
     for arquivo in selecionados:
         print(f"- {arquivo.name}")
 
-
+# Execute este script para selecionar aleatoriamente 50 arquivos JSON da pasta 'json_parsed' e copiá-los para 'json_teste'.
+# A semente fixa garante que a mesma seleção seja feita em execuções futuras, facilitando testes consistentes.
 if __name__ == "__main__":
     main()
