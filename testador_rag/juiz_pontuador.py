@@ -166,6 +166,6 @@ def avaliar_rag_com_juiz(arquivo_dataset, arquivo_saida):
 if __name__ == "__main__":
     # Vamos começar testando o dataset simples primeiro
     arquivo_entrada = "teste_unitario2.json" # Altere para o nome exato do seu arquivo
-    arquivo_relatorio = "teste_final2.csv"
+    arquivo_relatorio = "teste_fonte_uteis_complexo.csv"
     
     avaliar_rag_com_juiz(arquivo_entrada, arquivo_relatorio)
