@@ -28,7 +28,17 @@ def processar_json_aneel_markdown(json_data: dict) -> list:
     recursive_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1024,
         chunk_overlap=154,
-        separators=["\n\n", "\n", ".", " ", ""],
+        separators=[
+            "\nASSUNTO:", "\nPROCESSO:", "\nRESPONSÁVEL:", "\nRELATOR:", "\nINTERESSADOS:",
+           
+            "\nI. ", "\nII. ", "\nIII. ", "\nIV. ",
+            
+            "\nI – ", "\nII – ", "\nIII – ", "\nIV – ",
+            
+            "\nANEXO",    
+            # Quebras genéricas (fallback)
+            "\n\n", "\n", ". ", " ", ""
+        ],
         add_start_index=True
     )
     
@@ -80,26 +90,54 @@ def salvar_chunks_em_disco(lista_de_chunks: list, caminho_arquivo:str="chunks/ch
             }
             f.write(json.dumps(chunk_dict, ensure_ascii=False) + '\n')
 
+# -------------------- mini log -------------------------
+def carregar_processados(caminho_log: str) -> set:
+    caminho = Path(caminho_log)
+    if not caminho.exists():
+        return set()
+    with open(caminho, 'r', encoding='utf-8') as f:
+        return set(linha.strip() for linha in f if linha.strip())
+
+def registrar_processado(caminho_log: str, nome_arquivo: str) -> None:
+    with open(caminho_log, 'a', encoding='utf-8') as f:
+        f.write(nome_arquivo + '\n')
+
 def main():
+    pasta_json = Path("json_teste")  # depois adaptar para todo o conjunto de dados!!
+    arquivo_saida = "chunks/chunks_markdown.jsonl"
+    arquivo_log = "chunks/processados.log"
+    
+    Path(arquivo_saida).parent.mkdir(parents=True, exist_ok=True)
+    
+    #o que já foi processado em execuções anteriores
+    ja_processados = carregar_processados(arquivo_log)
+    print(f"Arquivos já processados em execuções anteriores: {len(ja_processados)}")
+    
+    arquivos_json = sorted(pasta_json.glob("*.json"))
+    
     arquivos_sucesso = 0
+    arquivos_pulados = 0
     arquivos_falha = 0
     total_chunks_gerados = 0
     arquivos_erro_json = []
     
-    pasta_json = Path("json_teste") # Certifique-se de que esta pasta existe e contém os arquivos JSON a serem processados
-    arquivos_json = sorted(pasta_json.glob("*.json"))
-    
-    arquivo_saida = "chunks/chunks_markdown.jsonl"
     for caminho_json in arquivos_json:
+        # verifica oq ja foi processado e pula eles
+        if caminho_json.name in ja_processados:
+            arquivos_pulados += 1
+            continue
+        
         try:
             with open(caminho_json, 'r', encoding='utf-8') as f:
                 json_data = json.load(f)
-                
-            chunks = processar_json_aneel_markdown(json_data) # Processa o JSON e gera os chunks
             
-            if chunks: # Só salva se o documento gerou algum conteúdo
+            chunks = processar_json_aneel_markdown(json_data)
+            
+            if chunks:  # Só salva se o documento gerou algum conteúdo
                 salvar_chunks_em_disco(chunks, arquivo_saida)
-                
+
+            registrar_processado(arquivo_log, caminho_json.name)
+            
             arquivos_sucesso += 1
             total_chunks_gerados += len(chunks)
             print(f"[OK] {caminho_json.name} processado. +{len(chunks)} chunks.")
@@ -108,18 +146,20 @@ def main():
             arquivos_falha += 1
             print(f"[ERRO] Falha ao processar {caminho_json.name}: {e}")
             arquivos_erro_json.append(caminho_json.name)
-            
+    
     print("-" * 30)
     print("Resumo da Execução:")
-    print(f"Arquivos processados com sucesso: {arquivos_sucesso}")
+    print(f"Arquivos pulados (já processados antes): {arquivos_pulados}")
+    print(f"Arquivos processados com sucesso nesta execução: {arquivos_sucesso}")
     print(f"Arquivos com falha: {arquivos_falha}")
-    print(f"Total de chunks salvos no JSONL: {total_chunks_gerados}")
+    print(f"Total de chunks salvos nesta execução: {total_chunks_gerados}")
     
-    # Se houver arquivos que causaram erro, salva seus nomes em um arquivo de texto para análise posterior
+
     if arquivos_erro_json:
-        with open("erros_processamento.txt", 'w', encoding='utf-8') as f:
+        with open("erros_ultima_execucao.txt", 'w', encoding='utf-8') as f:
             for nome_arquivo in arquivos_erro_json:
                 f.write(nome_arquivo + '\n')
+
 
 if __name__ == "__main__":
     main()
