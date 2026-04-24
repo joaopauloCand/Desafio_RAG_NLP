@@ -11,6 +11,8 @@ ARQUIVO_SAIDA_JSONL = "chunks\\chunks.jsonl"
 ARQUIVO_CHECKPOINTS = "chunks\\checkpoints_chunking.txt"
 ARQUIVO_ERROS = "chunks\\erros_chunking.txt"
 TOTAL_CHUNKS_GERADOS = "chunks\\total_chunks_gerados.txt"
+PASTA_PARSEDS = "json_parsed"
+
 # O Splitter Estrutural com os nomes
 headers_para_fatiar = [
     ("#", "Titulo_Principal"),
@@ -78,10 +80,12 @@ def atualizar_total_chunks(qtd_chunks: int, arquivo_total: str = TOTAL_CHUNKS_GE
     except Exception as e:
         print(e)
         pass
+    
 # ==========================================
 # 3. Processando JSONs
 # ==========================================
-def processar_em_massa(pasta_origem: str, arquivo_saida_jsonl: str = ARQUIVO_SAIDA_JSONL)-> None:
+
+def processar_em_massa(pasta_origem: str = PASTA_PARSEDS, arquivo_saida_jsonl: str = ARQUIVO_SAIDA_JSONL)-> None:
     """Processa em massa os arquivos JSON, fatiando o conteúdo Markdown e salvando em um arquivo JSONL compatível com LangChain. O processo é robusto, com checkpointing e registro de erros para garantir que nada seja perdido mesmo em caso de falhas."""
     print("Preparando a Linha de Montagem (Leitura de JSONs)...")
     total_chunks_gerados = 0
@@ -197,6 +201,6 @@ def processar_em_massa(pasta_origem: str, arquivo_saida_jsonl: str = ARQUIVO_SAI
     finally:
         atualizar_total_chunks(total_chunks_gerados)
         print(total_chunks_gerados)
+
 if __name__ == "__main__":
-    pasta_origem = "C:\\Users\\joaop\\OneDrive\\Imagens\\Documentos\\NLP\\json_parsed"  # <-- Altere para a pasta onde estão seus arquivos JSON
-    processar_em_massa(pasta_origem)
+    processar_em_massa()

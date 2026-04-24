@@ -4,7 +4,11 @@ from tqdm import tqdm
 from langchain_core.documents import Document
 from langchain_elasticsearch import ElasticsearchStore
 
-TAMANHO_LOTE = 500 #Quantidade de documentos a serem enviados por lote para o Elasticsearch (ajuste conforme necessário)
+# Configurações
+TAMANHO_LOTE = 500  # Quantidade de documentos a serem enviados por lote para o Elasticsearch
+DOCKER_ELASTICSEARCH_URL = "http://localhost:9200"
+ELASTICSEARCH_INDEX_NAME = "aneel_lexical"
+ARQUIVO_JSONL = "chunks\\chunks.jsonl"
 
 def gerador_de_lotes_es(caminho_arquivo: str, tamanho_lote: int) -> iter:
     """Lê o JSONL de forma preguiçosa para não sobrecarregar a RAM do VS Code."""
@@ -21,7 +25,7 @@ def gerador_de_lotes_es(caminho_arquivo: str, tamanho_lote: int) -> iter:
         if lote_atual:
             yield lote_atual
 
-def popular_elasticsearch(arquivo_jsonl: str, nome_indice: str, url_es: str = "http://localhost:9200", tamanho_lote: int = TAMANHO_LOTE) -> None:
+def inserir_elasticsearch(arquivo_jsonl: str = ARQUIVO_JSONL, nome_indice: str = ELASTICSEARCH_INDEX_NAME, url_es: str = DOCKER_ELASTICSEARCH_URL, tamanho_lote: int = TAMANHO_LOTE) -> None:
     """Função principal para popular o Elasticsearch com os chunks do JSONL."""
     print("🚀 Iniciando ingestão no Elasticsearch (Busca Lexical/BM25)...")
     
@@ -47,6 +51,4 @@ def popular_elasticsearch(arquivo_jsonl: str, nome_indice: str, url_es: str = "h
     print(f"\n✅ Concluído! {chunks_inseridos} chunks indexados no Elasticsearch.")
 
 if __name__ == "__main__":
-    arquivo_jsonl = "chunks\\chunks.jsonl"  # O arquivo JSONL gerado pelo chunking.py
-    nome_indice = "aneel_lexical"  # Nome do índice no Elasticsearch
-    popular_elasticsearch(arquivo_jsonl, nome_indice)
+    inserir_elasticsearch()

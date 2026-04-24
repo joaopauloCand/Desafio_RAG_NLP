@@ -7,17 +7,27 @@ from langchain_core.documents import Document
 from dotenv import load_dotenv
 import re
 
-load_dotenv() 
+# ==========================================
+# CONFIGURAÇÕES
+# ==========================================
+
+load_dotenv() # Carrega a chave de API do Google do arquivo .env, se existir
+DIRETORIO_CHROMA = "banco_chroma"
+MODEL_EMBEDDING = "models/gemini-embedding-001"
+MODEL_GENERATIVE = "gemini-2.5-flash"
+DOCKER_ELASTICSEARCH_URL = "http://localhost:9200"
+ELASTICSEARCH_INDEX_NAME = "aneel_lexical"
 
 def consultar_assistente_aneel(pergunta_usuario: str) -> tuple[str, list[Document]]:
     """Função principal que orquestra a consulta ao assistente especializado da ANEEL."""
+
     # ---------------------------------------------------------
-    # FASE 1: BUSCA HÍBRIDA DIRETA (NUVEM + DISCO LOCAL)
+    # FASE 1: BUSCA (Retriver Híbrido - Vetorial + Lexical)
     # ---------------------------------------------------------
     
     # 1. Recuperador Vetorial (ChromaDB + Gemini)
-    caminho_banco_vetorial = "banco_chroma"
-    embeddings_google = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
+    caminho_banco_vetorial = DIRETORIO_CHROMA
+    embeddings_google = GoogleGenerativeAIEmbeddings(model=MODEL_EMBEDDING)
     banco_vetorial = Chroma(persist_directory=caminho_banco_vetorial, embedding_function=embeddings_google)
     
     retriever_vetorial = banco_vetorial.as_retriever(
@@ -27,13 +37,13 @@ def consultar_assistente_aneel(pergunta_usuario: str) -> tuple[str, list[Documen
 
     # 2. Recuperador Lexical (Elasticsearch via Docker)
     banco_lexical = ElasticsearchStore(
-        es_url="http://localhost:9200",
-        index_name="aneel_lexical",
+        es_url=DOCKER_ELASTICSEARCH_URL,
+        index_name=ELASTICSEARCH_INDEX_NAME,
         strategy=ElasticsearchStore.BM25RetrievalStrategy()
     )
     retriever_palavra_chave = banco_lexical.as_retriever(search_kwargs={"k": 6})
     
-    # 3. O Gerente (Ensemble) - Mantendo a prioridade na palavra exata
+    # 3. Ensemble - Mantendo a prioridade na palavra exata
     retriever_hibrido = EnsembleRetriever(
         retrievers=[retriever_palavra_chave, retriever_vetorial],
         weights=[0.6, 0.4] 
@@ -45,6 +55,7 @@ def consultar_assistente_aneel(pergunta_usuario: str) -> tuple[str, list[Documen
     # ---------------------------------------------------------
     # FASE 2: AUGMENTATION (Construção do Prompt)
     # ---------------------------------------------------------
+
     textos_extraidos = []
     for i, doc in enumerate(documentos_recuperados):
         id_doc = doc.metadata.get('id_processo', 'Documento sem ID') 
@@ -79,15 +90,17 @@ def consultar_assistente_aneel(pergunta_usuario: str) -> tuple[str, list[Documen
     # ---------------------------------------------------------
     # FASE 3: GENERATION (Geração via LLM)
     # ---------------------------------------------------------
+
     print("🧠 Consultando os documentos e gerando a resposta...")
     
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
+    llm = ChatGoogleGenerativeAI(model=MODEL_GENERATIVE, temperature=0.2)
     resposta = llm.invoke(prompt_final)
     resposta_texto = resposta.content
     
     # ---------------------------------------------------------
     # FASE 4: FILTRAGEM E AGRUPAMENTO DE FONTES
     # ---------------------------------------------------------
+
     conteudos_entre_colchetes = re.findall(r'\[(.*?)\]', resposta_texto)
     
     citacoes = set()
@@ -130,9 +143,7 @@ def consultar_assistente_aneel(pergunta_usuario: str) -> tuple[str, list[Documen
     
     return resposta_texto, documentos_utilizados_final
 
-# ==========================================
-# TESTE FINAL
-# ==========================================
+#Código de teste
 if __name__ == "__main__":
     pergunta = "Qual é a principal decisão tomada pelo Despacho Nº 244, de 28 de janeiro de 2016, em relação à unidade geradora UG2 da CGH Wasser Kraft?"
     
@@ -142,3 +153,8 @@ if __name__ == "__main__":
     print("🤖 RESPOSTA DO ASSISTENTE:")
     print("="*50)
     print(resposta_texto)
+    for i, doc in enumerate(fontes_utilizadas):
+        print(f"\n--- Documento Utilizado [{i+1}] ---")
+        print(f"ID: {doc.metadata.get('id_processo', 'Documento sem ID')}")
+        print(f"URL: {doc.metadata.get('url', 'Link não disponível')}")
+        print(f"Conteúdo: {doc.page_content[:500]}...")

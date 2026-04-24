@@ -8,10 +8,25 @@ from langchain_core.documents import Document
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
 
+# ==========================================
+# 1. CONFIGURAÇÕES
+# ==========================================
+
 load_dotenv() # Carrega a chave de API do Google do arquivo .env, se existir
-#Variáveis de configuração
-TAMANHO_LOTE = 100 
-TOTAL_CHUNKS_ESPERADOS = 297858 # Estimativa do número total de chunks de acordo com o chunking.py (297.858)
+TAMANHO_LOTE = 100 #Tamanho do lote enviado
+TOTAL_CHUNKS_DIRETORIO = "chunks\\total_chunks_gerados.txt" #tem apenas um número inteiro
+ARQUIVO_JSONL = "chunks\\chunks.jsonl"
+DIRETORIO_CHROMA = "banco_chroma"
+ARQUIVO_CHECKPOINT = "embedding_checkpoint.txt"
+MODEL_EMBEDDING = "models/gemini-embedding-001"
+
+try:
+    if os.path.exists(TOTAL_CHUNKS_DIRETORIO):
+            with open(TOTAL_CHUNKS_DIRETORIO, 'r', encoding='utf-8') as f:
+                TOTAL_CHUNKS_ESPERADOS = int(f.read().strip())
+except Exception as e:
+    print(f"⚠️ Erro ao ler o total de chunks esperados: {e}")
+    TOTAL_CHUNKS_ESPERADOS = 297858 # Valor padrão caso haja um problema
 
 # ==========================================
 # 2. FUNÇÕES DE CHECKPOINT
@@ -31,6 +46,7 @@ def salvar_linha_atual(numero_linha: int, arquivo_checkpoint: str) -> None:
 # ==========================================
 # 3. O LEITOR PREGUIÇOSO (Gerador de Lotes)
 # ==========================================
+
 def gerador_de_lotes(caminho_arquivo: str, linha_inicio: int, tamanho_lote: int)-> iter:
     """Gerador que lê o arquivo JSONL a partir de uma linha específica e produz lotes de documentos para vetorização. Isso permite que o processo de vetorização seja eficiente em termos de memória, mesmo para arquivos muito grandes."""
     lote_atual = []
@@ -58,13 +74,13 @@ def gerador_de_lotes(caminho_arquivo: str, linha_inicio: int, tamanho_lote: int)
 # ==========================================
 # 4. O MOTOR DE VETORIZAÇÃO BLINDADO
 # ==========================================
-def processar_embeddings(arquivo_jsonl: str, diretorio_chroma: str, arquivo_checkpoint: str) -> None:
+def processar_embeddings(arquivo_jsonl: str = ARQUIVO_JSONL, diretorio_chroma: str = DIRETORIO_CHROMA, arquivo_checkpoint: str = ARQUIVO_CHECKPOINT) -> None:
     """Função principal que orquestra o processo de vetorização, utilizando o Google Generative AI Embeddings e o ChromaDB. O processo é robusto, com tratamento de erros e um sistema de retry exponencial para lidar com limites de API, garantindo que o progresso seja salvo a cada lote processado."""
     print("🚀 A iniciar Vetorização em Nuvem (Embeddings)...")
     
     # Task_type configurado para melhorar a semântica de banco de conhecimento
     embeddings_google = GoogleGenerativeAIEmbeddings(
-        model="models/gemini-embedding-001",
+        model=MODEL_EMBEDDING,
         task_type="RETRIEVAL_DOCUMENT" 
     )
     
@@ -124,7 +140,4 @@ def processar_embeddings(arquivo_jsonl: str, diretorio_chroma: str, arquivo_chec
     print("="*50)
 
 if __name__ == "__main__":
-    arquivo_jsonl = "chunks\chunks.jsonl" # <-- Ajuste o caminho conforme necessário
-    diretorio_chroma = "banco_chroma" # <-- Ajuste o caminho conforme necessário
-    arquivo_checkpoint = "embedding_checkpoint.txt" # <-- Arquivo para salvar o progresso do checkpoint
-    processar_embeddings(arquivo_jsonl, diretorio_chroma, arquivo_checkpoint)
+    processar_embeddings()
