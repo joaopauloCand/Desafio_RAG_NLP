@@ -1,0 +1,228 @@
+[
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual a diferença total de Potência Instalada entre a Central Geradora Eólica Ventos de Santa Marcella 01 e o conjunto das Centrais Geradoras Fotovoltaicas Talismã Pilar de Goiás?",
+        "resposta_esperada": "A Central Geradora Eólica Ventos de Santa Marcella 01 possui 50.400 kW de Potência Instalada. O conjunto das cinco Centrais Geradoras Fotovoltaicas Talismã Pilar de Goiás possui 137.480 kW (5 x 27.496 kW). A diferença total é de 87.080 kW (137.480 kW - 50.400 kW).",
+        "documentos_fonte": [
+            "2021-12-14_rea_resolu_o_autorizativa_10951_2021",
+            "2021-12-23_dsp_despacho_4085_2021"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Quantas unidades geradoras compõem a Central Geradora Eólica Ventos de Santa Marcella 01 e quantas Centrais Geradoras Fotovoltaicas foram registradas para a Safira Trading e Geração de Energia Ltda.?",
+        "resposta_esperada": "A Central Geradora Eólica Ventos de Santa Marcella 01 é constituída por 12 unidades geradoras. Para a Safira Trading e Geração de Energia Ltda., foram registradas 5 Centrais Geradoras Fotovoltaicas (Talismã Pilar de Goiás 1 a 5).",
+        "documentos_fonte": [
+            "2021-12-14_rea_resolu_o_autorizativa_10951_2021",
+            "2021-12-23_dsp_despacho_4085_2021"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual a diferença de Potência Instalada entre a UFV Lagoa do Frade II e a UFV Assu Sol II, e em quais estados do Brasil cada uma dessas usinas está localizada?",
+        "resposta_esperada": "A UFV Lagoa do Frade II, operada pela Tecneira Solar S.A., está localizada em Russas, Ceará, e possui uma Potência Instalada de 29.876 kW. Já a UFV Assu Sol II, operada pela Assu Sol Solar Participações e Geração de Energia S.A., está localizada em Assú, Rio Grande do Norte, e possui uma Potência Instalada de 40.536 kW. A diferença de Potência Instalada entre elas é de 10.660 kW.",
+        "documentos_fonte": [
+            "2016-09-19_dsp_despacho_2465_2016",
+            "2022-02-25_rea_resolu_o_autorizativa_11204_2022"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Considerando as empresas Tecneira Solar S.A. e Usina Termelétrica Lençóis Paulista SPE S.A., qual delas teve o registro de uma decisão regulatória (despacho ou portaria) mais recente, e qual o tipo de central geradora que cada uma delas opera?",
+        "resposta_esperada": "A Usina Termelétrica Lençóis Paulista SPE S.A. teve a decisão regulatória mais recente, uma Portaria de 1º de julho de 2022, referente ao enquadramento REIDI para a Central Geradora Termelétrica (UTE) denominada Cidade do Livro. A Tecneira Solar S.A. teve um Despacho de 15 de setembro de 2016, referente à alteração de potência da Central Geradora Fotovoltaica (UFV) Lagoa do Frade II.",
+        "documentos_fonte": [
+            "2016-09-19_dsp_despacho_2465_2016",
+            "2022-07-04_prt_portaria_1475_2022"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual é a Resolução Normativa da ANEEL que é referenciada tanto na autorização da Central Geradora Fotovoltaica Seridó IX quanto na portaria que prorroga a concessão da PCH Rio Timbó, e qual a potência instalada da usina solar?",
+        "resposta_esperada": "A Resolução Normativa ANEEL nº 921, de 23 de fevereiro de 2021, é referenciada em ambos os documentos. A Central Geradora Fotovoltaica Seridó IX possui 50.000 kW de Potência Instalada.",
+        "documentos_fonte": [
+            "2022-07-19_rea_resolu_o_autorizativa_12239_2022",
+            "2021-09-01_prt_portaria_545_2021"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual o regime de operação da Central Geradora Fotovoltaica Seridó IX e qual o valor anual que a Companhia Bom Sucesso de Eletricidade deve recolher a título de Uso de Bem Público (UBP) pela PCH Rio Timbó?",
+        "resposta_esperada": "A Central Geradora Fotovoltaica Seridó IX opera sob o regime de Produção Independente de Energia Elétrica (PIE). A Companhia Bom Sucesso de Eletricidade deve recolher R$ 52.170,70 anuais a título de Uso de Bem Público (UBP).",
+        "documentos_fonte": [
+            "2022-07-19_rea_resolu_o_autorizativa_12239_2022",
+            "2021-09-01_prt_portaria_545_2021"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual a diferença na largura da área de servidão administrativa entre a Linha de Transmissão UFV Vista Alegre - Janaúba 3 e a Linha de Transmissão SE Cajueiro – SE Caju, e em quais estados elas estão localizadas?",
+        "resposta_esperada": "A Linha de Transmissão UFV Vista Alegre - Janaúba 3, localizada em Minas Gerais, possui uma largura de 80 metros. A Linha de Transmissão SE Cajueiro – SE Caju, localizada no Rio Grande do Norte, possui uma largura de 60 metros. A diferença na largura é de 20 metros (80m - 60m).",
+        "documentos_fonte": [
+            "2022-04-13_rea_resolu_o_autorizativa_11533_2022",
+            "2021-04-06_rea_resolu_o_autorizativa_9858_2021"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Em 5 de abril de 2022, a ANEEL tomou decisões que afetaram diferentes empresas. Quais foram as empresas e as respectivas ações ou projetos relacionados a essas decisões?",
+        "resposta_esperada": "Em 5 de abril de 2022, a ANEEL negou provimento ao recurso interposto pela Cemig Distribuição S.A. (Cemig-D), mantendo a postergação do início de vigência dos Contratos de Uso do Sistema de Distribuição (CUSD) das Usinas Fotovoltaicas (UFVs) Araxá 1 e Araxá 2. Na mesma data, a ANEEL declarou de utilidade pública, para instituição de servidão administrativa, uma área de terra em favor da Vista Alegre III Energia SPE Ltda., para a passagem da Linha de Transmissão 500 kV UFV Vista Alegre - Janaúba 3.",
+        "documentos_fonte": [
+            "2022-04-11_dsp_despacho_887_2022",
+            "2022-04-13_rea_resolu_o_autorizativa_11533_2022"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual o cargo do signatário do Despacho que registrou a adequabilidade da PCH Ribas e qual a data de publicação da Portaria que alterou a redação de cargos de coordenação em 2022?",
+        "resposta_esperada": "O signatário do Despacho que registrou a adequabilidade da PCH Ribas é o Superintendente Adjunto de Concessões e Autorizações de Geração. A Portaria que alterou a redação de cargos de coordenação em 2022 foi publicada em 30 de junho de 2022.",
+        "documentos_fonte": [
+            "2022-01-14_dsp_despacho_087_2022",
+            "2022-06-30_prt_portaria_179_2022"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual o nome do servidor que teve a redução de jornada de trabalho prorrogada em 2016 e qual a matrícula SIAPE do Coordenador dos Processos de Auditoria e Consultoria, conforme a portaria de junho de 2022?",
+        "resposta_esperada": "O servidor que teve a redução de jornada de trabalho prorrogada em 2016 foi Luciana Sachetto Nascimento. A matrícula SIAPE do Coordenador dos Processos de Auditoria e Consultoria, conforme a portaria de junho de 2022, é 1560040.",
+        "documentos_fonte": [
+            "2016-08-12_prt_portaria_4103_2016",
+            "2022-06-30_prt_portaria_179_2022"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual era a posição de Hélvio Neves Guerra na ANEEL quando o Despacho nº 374/2016 foi emitido para a EOL Marítimo Patos 1, e quem era o Diretor-Geral da ANEEL que assinou a Portaria nº 265/2022 autorizando a viagem de Aurélio Calheiros de Melo Júnior?",
+        "resposta_esperada": "Hélvio Neves Guerra era o Superintendente de Concessões e Autorizações de Geração da ANEEL quando o Despacho nº 374/2016 foi emitido. Sandoval de Araujo Feitosa Neto era o Diretor-Geral da ANEEL que assinou a Portaria nº 265/2022.",
+        "documentos_fonte": [
+            "2016-02-29_dsp_despacho_374_2016",
+            "2022-09-09_prt_portaria_265_2022"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual o CNPJ da empresa Parque Eólico Marítimo Patos 1 Geração e Comércio de Energia SPE Ltda., e qual a potência instalada da EOL Marítimo Patos 1? Em contraste, qual o CNPJ da Equatorial Pará Distribuidora de Energia S.A., e qual a extensão aproximada da Linha de Distribuição 34,5 kV SE Santa Cruz do Arari – SE Chaves que lhe foi autorizada?",
+        "resposta_esperada": "O CNPJ da Parque Eólico Marítimo Patos 1 Geração e Comércio de Energia SPE Ltda. é 22.477.221/0001-98, e a EOL Marítimo Patos 1 possui 30.000 kW de Potência Instalada. O CNPJ da Equatorial Pará Distribuidora de Energia S.A. é 04.895.728/0001-80, e a Linha de Distribuição 34,5 kV SE Santa Cruz do Arari – SE Chaves tem aproximadamente 104,4 km de extensão.",
+        "documentos_fonte": [
+            "2016-02-29_dsp_despacho_374_2016",
+            "2022-08-15_rea_resolu_o_autorizativa_12454_2022"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Considerando as ações da ANEEL em agosto de 2022, qual empresa teve um documento de autorização ou liberação de caução publicado mais tarde, e qual o tipo de documento associado a essa empresa?",
+        "resposta_esperada": "A Equatorial Pará Distribuidora de Energia S.A. teve uma ação publicada mais tarde, em 9 de agosto de 2022, referente a uma Resolução Autorizativa.",
+        "documentos_fonte": [
+            "2022-08-15_rea_resolu_o_autorizativa_12454_2022",
+            "2022-08-01_ofc_of_cio_047_2022"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual o valor do pagamento anual de Uso de Bem Público (UBP) para a Pequena Central Hidrelétrica (PCH) Rio Timbó, localizada em Santa Catarina, e qual a extensão da Linha de Distribuição de 34,5 kV que a Equatorial Pará Distribuidora de Energia S.A. foi autorizada a instituir servidão administrativa no estado do Pará?",
+        "resposta_esperada": "O valor do pagamento anual de Uso de Bem Público (UBP) para a PCH Rio Timbó é de R$ 52.170,70. A extensão da Linha de Distribuição de 34,5 kV da Equatorial Pará é de aproximadamente 104,4 km.",
+        "documentos_fonte": [
+            "2021-09-01_prt_portaria_545_2021",
+            "2022-08-15_rea_resolu_o_autorizativa_12454_2022"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual a diferença, em dias, entre a data de publicação da Resolução Normativa ANEEL que a Brennand Energia Eólica S.A. deve seguir para a emissão de outorga e a Resolução Normativa ANEEL que a Companhia Bom Sucesso de Eletricidade deve cumprir para a PCH Rio Timbó?",
+        "resposta_esperada": "A diferença é de 350 dias. A Resolução Normativa nº 876 foi publicada em 10 de março de 2020 e a Resolução Normativa ANEEL nº 921 foi publicada em 23 de fevereiro de 2021.",
+        "documentos_fonte": [
+            "2022-02-16_dsp_despacho_480_2022",
+            "2021-09-01_prt_portaria_545_2021"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual o nome do superintendente que assinou o despacho referente à homologação das diferenças tarifárias da CEEE-D e qual o valor anual, em reais, que a Companhia Bom Sucesso de Eletricidade deve recolher a título de Uso de Bem Público (UBP) pela PCH Rio Timbó?",
+        "resposta_esperada": "O superintendente que assinou o despacho da CEEE-D é DAVI ANTUNES LIMA. A Companhia Bom Sucesso de Eletricidade deve recolher R$ 52.170,70 anuais a título de Uso de Bem Público (UBP) pela PCH Rio Timbó.",
+        "documentos_fonte": [
+            "2021-11-03_dsp_despacho_3464_2021",
+            "2021-09-01_prt_portaria_545_2021"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual é a diferença de potência instalada entre a UTE CRV Capinópolis e a PCH Rio Timbó, e qual(is) dessas usinas se enquadra(m) na faixa de potência para a qual a Compensação Financeira pela Utilização de Recursos Hídricos (CFURH) é limitada a cinquenta por cento do valor calculado?",
+        "resposta_esperada": "A UTE CRV Capinópolis possui 20.000 kW de potência instalada e a PCH Rio Timbó possui 5.500 kW. A diferença é de 14.500 kW. Ambas as usinas, UTE CRV Capinópolis (20.000 kW) e PCH Rio Timbó (5.500 kW), se enquadram na faixa de potência superior a 5.000 kW e igual ou inferior a 30.000 kW, para a qual a CFURH é limitada a cinquenta por cento do valor calculado.",
+        "documentos_fonte": [
+            "2021-12-21_dsp_despacho_4063_2021",
+            "2021-09-01_prt_portaria_545_2021"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual empresa teve sua Concessão declarada caduca e qual empresa teve sua Concessão prorrogada e convertida em Autorização, e qual o CNPJ de cada uma delas?",
+        "resposta_esperada": "A Paraíso Transmissora de Energia S.A., CNPJ 21.868.254/0001-04, teve sua Concessão declarada caduca. A Companhia Bom Sucesso de Eletricidade, CNPJ 83.053.736/0001-55, teve sua Concessão prorrogada e convertida em Autorização.",
+        "documentos_fonte": [
+            "2022-02-04_prt_portaria_611_2022",
+            "2021-09-01_prt_portaria_545_2021"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual a diferença de potência instalada entre a PCH Alto Farias e a UHE Santa Branca, e em qual estado cada uma delas está localizada?",
+        "resposta_esperada": "A PCH Alto Farias possui 4.200 kW (4.2 MW) de potência instalada e está localizada em Santa Catarina. A UHE Santa Branca possui uma potência instalada mínima de 62 MW e está localizada no Paraná. A diferença de potência instalada entre elas é de 57.800 kW (ou 57.8 MW).",
+        "documentos_fonte": [
+            "2016-06-23_dsp_despacho_1623_2016",
+            "2016-11-07_ect_extrato_de_contrato_017_2016"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual o nome do Diretor-Geral da ANEEL que assinou a portaria de afastamento de servidores para o evento \"RE+ 2022\" e qual era a empresa titular da PCH Alto Farias no momento do despacho de adequabilidade em 2016?",
+        "resposta_esperada": "O Diretor-Geral da ANEEL que assinou a Portaria nº 265, de 5 de setembro de 2022, foi Sandoval de Araujo Feitosa Neto. A empresa titular da PCH Alto Farias, conforme o Despacho nº 1.623 de 20 de junho de 2016, era a Pronatur – Assessoria Ambiental e Florestal Ltda.",
+        "documentos_fonte": [
+            "2016-06-23_dsp_despacho_1623_2016",
+            "2022-09-09_prt_portaria_265_2022"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual a diferença de potência instalada entre a Central Geradora Fotovoltaica Seridó IX e a EOL Marítimo Patos 1?",
+        "resposta_esperada": "A Central Geradora Fotovoltaica Seridó IX possui 50.000 kW de potência instalada e a EOL Marítimo Patos 1 possui 30.000 kW, resultando em uma diferença de 20.000 kW.",
+        "documentos_fonte": [
+            "2016-02-29_dsp_despacho_374_2016",
+            "2022-07-19_rea_resolu_o_autorizativa_12239_2022"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "A empresa responsável pela Central Geradora Fotovoltaica Seridó IX tem sede em qual estado, e qual o Código Único de Empreendimentos de Geração (CEG) da usina eólica localizada no mesmo estado?",
+        "resposta_esperada": "A Central Geradora Solar Seridó 9 LTDA., responsável pela UFV Seridó IX, tem sede em Fortaleza, Ceará. O CEG da EOL Marítimo Patos 1, que está localizada no Ceará, é EOL.CV.CE.035371-0.01.",
+        "documentos_fonte": [
+            "2016-02-29_dsp_despacho_374_2016",
+            "2022-07-19_rea_resolu_o_autorizativa_12239_2022"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Considerando os projetos localizados em Santa Catarina, qual empresa foi beneficiada por uma Resolução Autorizativa da ANEEL em abril de 2021 para uma linha de distribuição, e qual a potência instalada da Pequena Central Hidrelétrica (PCH) que teve sua concessão prorrogada em agosto de 2021?",
+        "resposta_esperada": "A Cooperativa Energética Cocal - Coopercocal foi beneficiada pela Resolução Autorizativa da ANEEL em abril de 2021 para uma linha de distribuição. A PCH que teve sua concessão prorrogada em agosto de 2021 possui 5.500 kW de potência instalada.",
+        "documentos_fonte": [
+            "2021-04-20_rea_resolu_o_autorizativa_9885_2021",
+            "2021-09-01_prt_portaria_545_2021"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Qual o tipo de empreendimento declarado de utilidade pública pela Resolução Autorizativa ANEEL nº 9.885, de 13 de abril de 2021, e qual o Código Único de Empreendimento de Geração (CEG) da Central Geradora Fotovoltaica Solidão 4, que teve sua autorização ANEEL nº 10.149 emitida em junho de 2021?",
+        "resposta_esperada": "O empreendimento declarado de utilidade pública pela Resolução Autorizativa ANEEL nº 9.885, de 13 de abril de 2021, é uma Linha de Distribuição 69 kV. O CEG da Central Geradora Fotovoltaica Solidão 4, com autorização ANEEL nº 10.149 de junho de 2021, é UFV.RS.MG.047441-0.01.",
+        "documentos_fonte": [
+            "2021-04-20_rea_resolu_o_autorizativa_9885_2021",
+            "2022-03-09_prt_portaria_1239_2022"
+        ]
+    },
+    {
+        "tipo": "Multi-hop (Cruzamento)",
+        "pergunta": "Considerando o registro do Requerimento de Outorga da UTE CRV Capinópolis e a declaração de caducidade da concessão da Paraíso Transmissora de Energia S.A., qual foi o ato administrativo da ANEEL publicado entre essas duas datas e qual servidor foi beneficiado por ele?",
+        "resposta_esperada": "O ato administrativo publicado entre o registro do Requerimento de Outorga da UTE CRV Capinópolis (20 de dezembro de 2021) e a declaração de caducidade da concessão da Paraíso Transmissora de Energia S.A. (3 de fevereiro de 2022) foi a Portaria nº 373, de 24 de dezembro de 2021, que concedeu Licença para Capacitação ao servidor Fabrício Pereira de Souza.",
+        "documentos_fonte": [
+            "2021-12-21_dsp_despacho_4063_2021",
+            "2022-02-04_prt_portaria_611_2022",
+            "2021-12-24_prt_portaria_373_2021"
+        ]
+    }
+]

@@ -8,3 +8,6 @@ langchain-community
 langchain-text-splitters
 langchain-google-genai
 google-genai
+langchain_chroma
+tqdm
+langchain-elasticsearch

@@ -2,6 +2,7 @@
 *.env
 json_parsed/*
 json_teste/*
-meu_banco_markdown/*
+banco_chroma/*
 chunks/*
 *.csv
+*.zip
