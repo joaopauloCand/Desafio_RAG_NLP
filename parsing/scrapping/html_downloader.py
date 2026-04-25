@@ -154,7 +154,7 @@ def download_html(url, data_registro, output_dir, session, max_retries, timeout,
                         total_size += len(chunk)
 
             shutil.copy2(dest_path, testes_path)
-            logger.info(f"✓ Baixado: {safe_name} ({total_size / 1024:.1f} KB) [tentativa {attempt}]")
+            logger.info(f"Baixado: {safe_name} ({total_size / 1024:.1f} KB) [tentativa {attempt}]")
             return {"url": url, "sucesso": True, "motivo": None, "caminho": dest_path, "bytes": total_size}
 
         except requests.exceptions.Timeout:
@@ -167,7 +167,7 @@ def download_html(url, data_registro, output_dir, session, max_retries, timeout,
             logger.error(f"Erro inesperado para {safe_name}: {e}")
             time.sleep(DELAY_BETWEEN_RETRIES)
 
-    logger.error(f"✗ Falha definitiva: {safe_name}")
+    logger.error(f"Falha definitiva: {safe_name}")
     return {"url": url, "sucesso": False, "motivo": f"FALHOU_APOS_{max_retries}_TENTATIVAS"}
 
 

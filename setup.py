@@ -31,7 +31,7 @@ def baixar_banco_de_dados()-> bool:
         print_status(f"'{NOME_ZIP_BANCO}' já está pronto.")
         return True
 
-    print(f"📥 A baixar o banco de dados vetorial...")
+    print(f"A baixar o banco de dados vetorial...")
     print("Isso pode demorar dependendo da sua ligação à internet.")
     
     try:
@@ -80,7 +80,7 @@ def baixar_chunks()-> bool:
         print_status(f"O arquivo zip de '{ARQUIVO_CHUNKS}' já está pronto.")
         return True
 
-    print(f"📥 A baixar os chunks...")
+    print(f"A baixar os chunks...")
     print("Isso pode demorar dependendo da sua ligação à internet.")
 
     try:
@@ -116,8 +116,8 @@ def baixar_chunks()-> bool:
 
 def print_status(mensagem: str, sucesso: bool = True) -> None:
     """Imprime uma mensagem de status formatada com um símbolo visual para sucesso ou falha."""
-    simbolo = "✅" if sucesso else "⚠️"
-    print(f"{simbolo} {mensagem}")
+    prefixo = "OK" if sucesso else "ERRO"
+    print(f"{prefixo} {mensagem}")
 
 def extrair_banco_de_dados()-> bool:
     """Extrai o banco de dados vetorial se a pasta não existir."""
@@ -132,7 +132,7 @@ def extrair_banco_de_dados()-> bool:
         print_status(f"Ficheiro '{NOME_ZIP_BANCO}' não encontrado. Certifique-se de que o ZIP está na raiz.", False)
         return False
 
-    print(f"📦 A descompactar o banco de dados vetorial... Isto pode demorar um pouco.")
+    print(f"A descompactar o banco de dados vetorial... Isto pode demorar um pouco.")
     try:
         with zipfile.ZipFile(arquivo_zip, 'r') as zip_ref:
             zip_ref.extractall(".")
@@ -155,7 +155,7 @@ def extrair_chunks_jsonl()-> bool:
         print_status(f"Ficheiro '{NOME_ZIP_CHUNKS}' não encontrado. Certifique-se de que o ZIP está na raiz.", False)
         return False
 
-    print(f"📦 A descompactar o arquivo JSONL... Isto pode demorar um pouco.")
+    print(f"A descompactar o arquivo JSONL... Isto pode demorar um pouco.")
     try:
         with zipfile.ZipFile(arquivo_zip, 'r') as zip_ref:
             zip_ref.extractall(".")
@@ -196,7 +196,7 @@ def verificar_api_key()-> bool:
 
 def instalar_dependencias()-> bool:
     """Instala as bibliotecas Python necessárias."""
-    print("🛠️ A instalar dependências do Python...")
+    print("A instalar dependências do Python...")
     try:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", REQUISITOS])
         print_status("Dependências instaladas.")
@@ -205,9 +205,10 @@ def instalar_dependencias()-> bool:
         print_status(f"Falha ao instalar dependências: {e}", False)
         return False
 
-def gerir_docker() -> bool:
-    """Inicia os serviços via Docker Compose."""
-    print("🐳 A preparar a infraestrutura Docker...")
+#Função não utilizada no momento, já que a utilização do Docker foi deixada para o script de deploy. Mantida aqui para referência futura caso queira integrar a gestão do Docker no setup.
+""" def gerir_docker() -> bool:
+    #Inicia os serviços via Docker Compose.
+    print("A preparar a infraestrutura Docker...")
     try:
         # Verifica se o Docker está a correr
         subprocess.check_call(["docker", "info"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -218,7 +219,7 @@ def gerir_docker() -> bool:
         return True
     except Exception:
         print_status("Docker não detetado ou desligado. Instale o Docker Desktop para usar o Elasticsearch.", False)
-        return False
+        return False """
 
 def main():
     print("\n" + "="*50)
@@ -233,20 +234,18 @@ def main():
         ("Extração de Chunks", extrair_chunks_jsonl),
         ("Verificação de Credenciais", verificar_api_key),
         ("Instalação de Bibliotecas", instalar_dependencias)#,
-        #("Inicialização da Infraestrutura", gerir_docker)
+        #("Inicialização da Infraestrutura", gerir_docker) 
     ]
 
     for nome, acao in passos:
         if not acao():
-            print(f"\n❌ O passo '{nome}' falhou. Resolva o problema acima para continuar.")
+            print(f"\nERRO O passo '{nome}' falhou. Resolva o problema acima para continuar.")
             if nome == "Verificação de Credenciais":
                 print("Dica: Obtenha a sua chave em https://aistudio.google.com/")
             return
         print("="*50 + "\n")
 
-    print("✨ TUDO PRONTO! ✨")
-    print("A aplicação deve estar disponível em: http://localhost:8501")
-    print("="*50 + "\n")
+    print("TUDO PRONTO!")
 
 if __name__ == "__main__":
     main()

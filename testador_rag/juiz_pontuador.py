@@ -64,8 +64,8 @@ def avaliar_rag_com_juiz(arquivo_dataset, arquivo_saida):
 
     resultados_finais = []
     
-    print(f"⚖️ Iniciando o Tribunal da IA para {len(perguntas_teste)} perguntas...")
-    print("💡 DICA: Use Ctrl+C para parar a qualquer momento e salvar o relatório parcial.")
+    print(f"Iniciando o Tribunal da IA para {len(perguntas_teste)} perguntas...")
+    print("DICA: Use Ctrl+C para parar a qualquer momento e salvar o relatório parcial.")
     
     try:
         for i, item in enumerate(perguntas_teste, 1):
@@ -122,7 +122,7 @@ def avaliar_rag_com_juiz(arquivo_dataset, arquivo_saida):
                     })
                     
                     sucesso = True
-                    print(f"✅ Notas -> Fid: {avaliacao['fidelidade']['nota']} | Rel. Resp: {avaliacao['relevancia_resposta']['nota']} | Rel. Ctx: {avaliacao['relevancia_contexto']['nota']}")
+                    print(f"Notas -> Fid: {avaliacao['fidelidade']['nota']} | Rel. Resp: {avaliacao['relevancia_resposta']['nota']} | Rel. Ctx: {avaliacao['relevancia_contexto']['nota']}")
                     
                     # Pausa suave para não acionar o rate limit
                     time.sleep(4)
@@ -132,15 +132,15 @@ def avaliar_rag_com_juiz(arquivo_dataset, arquivo_saida):
                     if "429" in erro_str or "RESOURCE_EXHAUSTED" in erro_str:
                         tentativas += 1
                         espera = 15 * tentativas
-                        print(f"🛑 Radar do Juiz apitou. Pausando por {espera}s...")
+                        print(f"Radar do Juiz apitou. Pausando por {espera}s...")
                         time.sleep(espera)
                     else:
-                        print(f"⚠️ Erro ao decodificar JSON do juiz: {e}. Tentando novamente...")
+                        print(f"Erro ao decodificar JSON do juiz: {e}. Tentando novamente...")
                         tentativas += 1
                         time.sleep(5)
 
     except KeyboardInterrupt:
-        print("\n\n⚠️ Interrupção manual (Ctrl+C). Fechando o tribunal e salvando os votos...")
+        print("\n\nInterrupção manual (Ctrl+C). Fechando o tribunal e salvando os votos...")
 
     # ==========================================
     # GERAR O BOLETIM DE NOTAS (CSV)
@@ -149,10 +149,10 @@ def avaliar_rag_com_juiz(arquivo_dataset, arquivo_saida):
         df = pd.DataFrame(resultados_finais)
         df.to_csv(arquivo_saida, index=False, encoding='utf-8-sig') 
         
-        print(f"\n📊 Relatório salvo com sucesso em: {arquivo_saida}")
+        print(f"\nRelatório salvo com sucesso em: {arquivo_saida}")
         
         print("\n" + "=" * 40)
-        print("🏆 BOLETIM DE DESEMPENHO MÉDIO:")
+        print("BOLETIM DE DESEMPENHO MÉDIO:")
         print("=" * 40)
         print(f"Fidelidade (Não Alucinar): {df['Nota_Fidelidade'].mean():.2f} / 5.0")
         print(f"Precisão da Resposta:      {df['Nota_Rel_Resposta'].mean():.2f} / 5.0")

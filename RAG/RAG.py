@@ -49,7 +49,7 @@ def consultar_assistente_aneel(pergunta_usuario: str) -> tuple[str, list[Documen
         weights=[0.6, 0.4] 
     )
     
-    print("🔎 Realizando busca nos documentos...")
+    print("Realizando busca nos documentos...")
     documentos_recuperados = retriever_hibrido.invoke(pergunta_usuario)
     
     # ---------------------------------------------------------
@@ -91,7 +91,7 @@ def consultar_assistente_aneel(pergunta_usuario: str) -> tuple[str, list[Documen
     # FASE 3: GENERATION (Geração via LLM)
     # ---------------------------------------------------------
 
-    print("🧠 Consultando os documentos e gerando a resposta...")
+    print("Consultando os documentos e gerando a resposta...")
     
     llm = ChatGoogleGenerativeAI(model=MODEL_GENERATIVE, temperature=0.2)
     resposta = llm.invoke(prompt_final)
@@ -134,7 +134,7 @@ def consultar_assistente_aneel(pergunta_usuario: str) -> tuple[str, list[Documen
         indices_ordenados = sorted(info["indices"])
         tags_citacao = " ".join([f"[{i}]" for i in indices_ordenados])
         
-        ref_str = f"{tags_citacao} 📄 Documento: {id_doc} | Link: {info['url']}"
+        ref_str = f"{tags_citacao} | Documento: {id_doc} | Link: {info['url']}"
         referencias_formatadas.append(ref_str)
         documentos_utilizados_final.append(info["documento_base"])
 
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     resposta_texto, fontes_utilizadas = consultar_assistente_aneel(pergunta)
     
     print("\n" + "="*50)
-    print("🤖 RESPOSTA DO ASSISTENTE:")
+    print("RESPOSTA DO ASSISTENTE:")
     print("="*50)
     print(resposta_texto)
     for i, doc in enumerate(fontes_utilizadas):

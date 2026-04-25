@@ -25,7 +25,7 @@ try:
             with open(TOTAL_CHUNKS_DIRETORIO, 'r', encoding='utf-8') as f:
                 TOTAL_CHUNKS_ESPERADOS = int(f.read().strip())
 except Exception as e:
-    print(f"⚠️ Erro ao ler o total de chunks esperados: {e}")
+    print(f"Erro ao ler o total de chunks esperados: {e}")
     TOTAL_CHUNKS_ESPERADOS = 297858 # Valor padrão caso haja um problema
 
 # ==========================================
@@ -76,7 +76,7 @@ def gerador_de_lotes(caminho_arquivo: str, linha_inicio: int, tamanho_lote: int)
 # ==========================================
 def processar_embeddings(arquivo_jsonl: str = ARQUIVO_JSONL, diretorio_chroma: str = DIRETORIO_CHROMA, arquivo_checkpoint: str = ARQUIVO_CHECKPOINT) -> None:
     """Função principal que orquestra o processo de vetorização, utilizando o Google Generative AI Embeddings e o ChromaDB. O processo é robusto, com tratamento de erros e um sistema de retry exponencial para lidar com limites de API, garantindo que o progresso seja salvo a cada lote processado."""
-    print("🚀 A iniciar Vetorização em Nuvem (Embeddings)...")
+    print("A iniciar Vetorização em Nuvem (Embeddings)...")
     
     # Task_type configurado para melhorar a semântica de banco de conhecimento
     embeddings_google = GoogleGenerativeAIEmbeddings(
@@ -92,10 +92,10 @@ def processar_embeddings(arquivo_jsonl: str = ARQUIVO_JSONL, diretorio_chroma: s
     linha_inicio = carregar_linha_atual(arquivo_checkpoint)
     
     if linha_inicio >= TOTAL_CHUNKS_ESPERADOS:
-        print("🎉 O Banco de Dados Vetorial já está 100% completo!")
+        print("O Banco de Dados Vetorial já está 100% completo!")
         return
 
-    print(f"📍 A retomar a partir do chunk nº {linha_inicio}")
+    print(f"A retomar a partir do chunk nº {linha_inicio}")
     
     lotes = gerador_de_lotes(arquivo_jsonl, linha_inicio, TAMANHO_LOTE)
     
@@ -119,24 +119,24 @@ def processar_embeddings(arquivo_jsonl: str = ARQUIVO_JSONL, diretorio_chroma: s
                 except Exception as e:
                     tentativas += 1
                     tempo_espera = 2 ** tentativas # 2, 4, 8, 16, 32, 64... segundos
-                    print(f"\n⚠️ Limite atingido/Erro na API: \n{str(e)[:100]}")
-                    print(f"🔄 A aguardar {tempo_espera}s para a cota renovar (Tentativa {tentativas}/8)...")
+                    print(f"\nLimite atingido/Erro na API: \n{str(e)[:100]}")
+                    print(f"A aguardar {tempo_espera}s para a cota renovar (Tentativa {tentativas}/8)...")
                     time.sleep(tempo_espera)
             
             if not sucesso_no_lote:
-                print(f"\n❌ Falha irreversível após 8 tentativas. Abortando para segurança.")
+                print(f"\nFalha irreversível após 8 tentativas. Abortando para segurança.")
                 break
                 
             linha_atual += len(lote)
             salvar_linha_atual(linha_atual, arquivo_checkpoint)
 
     except KeyboardInterrupt:
-        print("\n\n🛑 PROCESSO INTERROMPIDO PELO UTILIZADOR (Ctrl+C).")
+        print("\n\nPROCESSO INTERROMPIDO PELO UTILIZADOR (Ctrl+C).")
         print(f"Progresso salvo no disco! O banco tem {linha_atual} chunks.")
     
     print("\n" + "="*50)
-    print(f"✅ SESSÃO DE VETORIZAÇÃO ENCERRADA!")
-    print(f"📊 Total de chunks injetados no ChromaDB: {linha_atual} / {TOTAL_CHUNKS_ESPERADOS}")
+    print(f"SESSÃO DE VETORIZAÇÃO ENCERRADA!")
+    print(f"Total de chunks injetados no ChromaDB: {linha_atual} / {TOTAL_CHUNKS_ESPERADOS}")
     print("="*50)
 
 if __name__ == "__main__":

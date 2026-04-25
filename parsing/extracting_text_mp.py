@@ -181,7 +181,7 @@ def extrair_html(filepath):
         try:
             with open(filepath, "r", encoding=enc) as f:
                 conteudo = f.read()
-            if "�" not in conteudo:
+            if "?" not in conteudo:
                 break
         except (UnicodeDecodeError, UnicodeError):
             continue

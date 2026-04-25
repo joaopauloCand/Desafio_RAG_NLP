@@ -27,8 +27,8 @@ def gerador_de_lotes_es(caminho_arquivo: str, tamanho_lote: int) -> iter:
 
 def inserir_elasticsearch(arquivo_jsonl: str = ARQUIVO_JSONL, nome_indice: str = ELASTICSEARCH_INDEX_NAME, url_es: str = DOCKER_ELASTICSEARCH_URL, tamanho_lote: int = TAMANHO_LOTE) -> None:
     """Função principal para popular o Elasticsearch com os chunks do JSONL."""
-    print("🚀 Iniciando ingestão no Elasticsearch (Busca Lexical/BM25)...")
-    
+    print("Iniciando ingestão no Elasticsearch (Busca Lexical/BM25)...")
+
     # Conecta ao ES e define a estratégia EXCLUSIVA de BM25
     banco_lexical = ElasticsearchStore(
         es_url=url_es,
@@ -48,7 +48,7 @@ def inserir_elasticsearch(arquivo_jsonl: str = ARQUIVO_JSONL, nome_indice: str =
         banco_lexical.add_documents(lote)
         chunks_inseridos += len(lote)
         
-    print(f"\n✅ Concluído! {chunks_inseridos} chunks indexados no Elasticsearch.")
+    print(f"\nConcluído! {chunks_inseridos} chunks indexados no Elasticsearch.")
 
 if __name__ == "__main__":
     inserir_elasticsearch()

@@ -347,7 +347,7 @@ def download_pdf(item, session, output_dir, max_retries, timeout, logger):
             result.tamanho_bytes = total_size
             result.tempo_total_seg = time.time() - start_time
             logger.info(
-                f"✓ Baixado: {safe_name} ({total_size / 1024:.1f} KB) "
+                f"Baixado: {safe_name} ({total_size / 1024:.1f} KB) "
                 f"[tentativa {attempt}]"
             )
             return result
@@ -380,7 +380,7 @@ def download_pdf(item, session, output_dir, max_retries, timeout, logger):
     result.tempo_total_seg = time.time() - start_time
     if not result.erro_mensagem:
         result.erro_mensagem = f"Falhou após {max_retries} tentativas"
-    logger.error(f"✗ Falha definitiva: {arquivo} | {result.erro_tipo}: {result.erro_mensagem[:150]}")
+    logger.error(f"Falha definitiva: {arquivo} | {result.erro_tipo}: {result.erro_mensagem[:150]}")
     return result
 
 
@@ -466,11 +466,11 @@ def generate_error_report(results, stats, log_dir, logger):
     print("=" * 60)
 
     if real_errors:
-        print(f"\n  ⚠ {len(real_errors)} ERROS - veja detalhes em:")
+        print(f"\n  AVISO: {len(real_errors)} ERROS - veja detalhes em:")
         print(f"    CSV: {csv_path}")
         print(f"    JSON: {json_path}")
     else:
-        print("\n  ✓ Nenhum erro!")
+        print("\n  Nenhum erro!")
     print()
 
 

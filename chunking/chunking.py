@@ -94,16 +94,16 @@ def processar_em_massa(pasta_origem: str = PASTA_PARSEDS, arquivo_saida_jsonl: s
         # Agora buscamos por arquivos .json
         todos_arquivos = [f for f in os.listdir(pasta_origem) if f.endswith('.json')]
     except Exception as e:
-        print(f"❌ Erro fatal: Não consegui acessar a pasta '{pasta_origem}'.\nErro: {e}")
+        print(f"Erro fatal: Não consegui acessar a pasta '{pasta_origem}'.\nErro: {e}")
         return
 
     arquivos_ja_feitos = carregar_processados()
     arquivos_pendentes = [f for f in todos_arquivos if f not in arquivos_ja_feitos]
     
-    print(f"📁 Total: {len(todos_arquivos)}\n")
+    print(f"Total: {len(todos_arquivos)}\n")
     
     if not arquivos_pendentes:
-        print("🎉 Todos os arquivos já foram processados!")
+        print("Todos os arquivos já foram processados!")
         return
 
     try:
@@ -186,18 +186,18 @@ def processar_em_massa(pasta_origem: str = PASTA_PARSEDS, arquivo_saida_jsonl: s
 
         # Print final do relatório completo
         print("\n" + "="*50)
-        print("\n✅ Processamento concluído com sucesso!")
+        print("\nProcessamento concluído com sucesso!")
         print("="*50)
-        print(f"📊 Relatório da Sessão:")
+        print(f"Relatório da Sessão:")
         print(f"   - Ficheiros Processados: {sucessos_lote}")
         print(f"   - Ficheiros com Erro: {erros_lote}")
         print(f"   - Total de Chunks Criados: {total_chunks_gerados}")
         print("="*50)
 
     except KeyboardInterrupt:
-        print("\n\n🛑 PROCESSO INTERROMPIDO PELO USUÁRIO (Ctrl+C). Trabalho salvo.")
+        print("\n\nPROCESSO INTERROMPIDO PELO USUÁRIO (Ctrl+C). Trabalho salvo.")
     except Exception as e:
-        print(f"\n\n❌ ERRO CRÍTICO:\n{e}")
+        print(f"\n\nERRO CRÍTICO:\n{e}")
     finally:
         atualizar_total_chunks(total_chunks_gerados)
         print(total_chunks_gerados)
