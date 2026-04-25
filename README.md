@@ -150,18 +150,3 @@ Este arquivo contém uma versão local do sistema RAG ainda não adaptada para A
 Ele usa recuperação híbrida, combinando busca lexical com Elasticsearch/BM25 e busca vetorial com ChromaDB/Gemini Embeddings.
 
 O modelo generativo configurado é `gemini-2.5-flash`, e o modelo de embedding configurado é `models/gemini-embedding-001`.
-
-## Estrutura esperada dos dados
-
-Alguns caminhos configurados nos scripts:
-
-```txt
-chunks/chunks.jsonl
-chunks/checkpoints_chunking.txt
-chunks/erros_chunking.txt
-chunks/total_chunks_gerados.txt
-json_parsed/
-banco_chroma/
-embedding_checkpoint.txt
-logs/
-```
