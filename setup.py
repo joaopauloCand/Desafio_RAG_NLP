@@ -3,14 +3,116 @@ import sys
 import zipfile
 import subprocess
 from pathlib import Path
+import requests
+from tqdm import tqdm
 
 # --- CONFIGURAÇÕES ---
+URL_DOWNLOAD_BANCO = "https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/banco_chroma.zip?download=true"
+URL_DOWNLOAD_CHUNKS = "https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/chunks.zip?download=true"
 NOME_ZIP_BANCO = "banco_chroma.zip"
 NOME_ZIP_CHUNKS = "chunks.zip"
 PASTA_BANCO = "banco_chroma"
 ARQUIVO_CHUNKS = "chunks\\chunks.jsonl"
 FICHEIRO_ENV = ".env"
 REQUISITOS = "requirements.txt"
+
+def baixar_banco_de_dados()-> bool:
+    """Baixa o arquivo ZIP do banco de dados vetorial automaticamente se não existir na máquina."""
+    arquivo_zip = Path(NOME_ZIP_BANCO)
+    pasta_banco = Path(PASTA_BANCO)
+
+    # Se a pasta já existir, não precisa baixar nem extrair
+    if pasta_banco.exists() and pasta_banco.is_dir():
+        print_status(f"'{PASTA_BANCO}' já está pronto.")
+        return True
+
+    # Se o ZIP já existir, só vai extrair no próximo passo
+    if arquivo_zip.exists():
+        print_status(f"'{NOME_ZIP_BANCO}' já está pronto.")
+        return True
+
+    print(f"📥 A baixar o banco de dados vetorial...")
+    print("Isso pode demorar dependendo da sua ligação à internet.")
+    
+    try:
+        # Faz a requisição em modo 'stream' para não estourar a RAM
+        resposta = requests.get(URL_DOWNLOAD_BANCO, stream=True)
+        resposta.raise_for_status() # Verifica se o link está válido
+        
+        # Pega o tamanho total do arquivo para a barra de progresso
+        tamanho_total = int(resposta.headers.get('content-length', 0))
+        
+        # Cria a barra de progresso com o tqdm
+        with open(arquivo_zip, 'wb') as ficheiro, tqdm(
+            desc=NOME_ZIP_BANCO,
+            total=tamanho_total,
+            unit='iB',
+            unit_scale=True,
+            unit_divisor=1024,
+        ) as barra:
+            for chunk in resposta.iter_content(chunk_size=8192):
+                tamanho = ficheiro.write(chunk)
+                barra.update(tamanho)
+                
+        print_status("Download do banco de dados concluído com sucesso!")
+        return True
+        
+    except requests.exceptions.RequestException as e:
+        print_status(f"Erro ao tentar baixar o banco de dados: {e}", False)
+        # Apaga o arquivo corrompido se o download cair no meio
+        if arquivo_zip.exists():
+            arquivo_zip.unlink()
+        print_status("Download do banco de dados falhou.", False)
+        return False
+
+def baixar_chunks()-> bool:
+    """Baixa o arquivo ZIP de chunks se não existir na máquina."""
+    arquivo_zip = Path(NOME_ZIP_CHUNKS)
+    pasta_chunks = Path(ARQUIVO_CHUNKS).parent
+
+    # Se a pasta já existir, não precisa baixar nem extrair
+    if pasta_chunks.exists() and pasta_chunks.is_dir():
+        print_status(f"Os chunks '{ARQUIVO_CHUNKS}' já estão prontos.")
+        return True
+
+    # Se o ZIP já existir, só vai extrair no próximo passo
+    if arquivo_zip.exists():
+        print_status(f"O arquivo zip de '{ARQUIVO_CHUNKS}' já está pronto.")
+        return True
+
+    print(f"📥 A baixar os chunks...")
+    print("Isso pode demorar dependendo da sua ligação à internet.")
+
+    try:
+        # Faz a requisição em modo 'stream' para não estourar a RAM
+        resposta = requests.get(URL_DOWNLOAD_CHUNKS, stream=True)
+        resposta.raise_for_status() # Verifica se o link está válido
+
+        # Pega o tamanho total do arquivo para a barra de progresso
+        tamanho_total = int(resposta.headers.get('content-length', 0))
+
+        # Cria a barra de progresso com o tqdm
+        with open(arquivo_zip, 'wb') as ficheiro, tqdm(
+            desc=NOME_ZIP_CHUNKS,
+            total=tamanho_total,
+            unit='iB',
+            unit_scale=True,
+            unit_divisor=1024,
+        ) as barra:
+            for chunk in resposta.iter_content(chunk_size=8192):
+                tamanho = ficheiro.write(chunk)
+                barra.update(tamanho)
+
+        print_status("Download dos chunks concluído com sucesso!")
+        return True
+
+    except requests.exceptions.RequestException as e:
+        print_status(f"Erro ao tentar baixar os chunks: {e}", False)
+        # Apaga o arquivo corrompido se o download cair no meio
+        if arquivo_zip.exists():
+            arquivo_zip.unlink()
+        print_status("Download dos chunks falhou.", False)
+        return False
 
 def print_status(mensagem: str, sucesso: bool = True) -> None:
     """Imprime uma mensagem de status formatada com um símbolo visual para sucesso ou falha."""
@@ -125,6 +227,8 @@ def main():
 
     # Ordem de execução
     passos = [
+        ("Download de Dados", baixar_banco_de_dados),
+        ("Download de Chunks", baixar_chunks),
         ("Extração de Dados", extrair_banco_de_dados),
         ("Extração de Chunks", extrair_chunks_jsonl),
         ("Verificação de Credenciais", verificar_api_key),
