@@ -58,4 +58,3 @@ python gerador_elasticsearch/gerador_elasticsearch.py
 
 - O Elasticsearch precisa estar acessível em `http://localhost:9200` antes da execução.
 - O script calcula o total de chunks para exibir a barra de progresso, então o arquivo JSONL precisa existir e conter linhas válidas.
-- Não há checkpoint nem retentativa automática neste script; se a execução falhar, será necessário rodá-lo novamente.
