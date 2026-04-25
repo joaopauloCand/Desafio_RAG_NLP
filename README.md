@@ -8,7 +8,7 @@ A API que encapsula este sistema está armazenada em outro repositório:
 
 Link do repositório da API: ([api_rag](https://github.com/kelvin-de-oliveira/api-rag))
 
-Todos os dados utilizados aqui podem ser encontrados neste ([dataset_huggingface](https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/tree/main))
+Todos os dados utilizados aqui podem ser encontrados em: ([dataset_huggingface](https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/tree/main))
 
 Desenvolvido para um desafio do Grupo de Estudos de NLP da Universidade Federal de Goiás.
 
