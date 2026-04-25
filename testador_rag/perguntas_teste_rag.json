@@ -1,0 +1,171 @@
+[
+    {
+        "tipo": "Fato Direto",
+        "pergunta": "Qual o nome da servidora que recebeu a Licença para Capacitação, conforme a Portaria nº 198?",
+        "resposta_esperada": "A servidora que recebeu a Licença para Capacitação é Flávia de Faria Campos Albernaz.",
+        "id_documento_fonte": "2021-07-23_prt_portaria_198_2021"
+    },
+    {
+        "tipo": "Cruzamento/Raciocínio",
+        "pergunta": "Considerando a Portaria nº 198, qual o período total e as datas de início e fim da Licença para Capacitação concedida à servidora Flávia de Faria Campos Albernaz?",
+        "resposta_esperada": "A Licença para Capacitação concedida à servidora Flávia de Faria Campos Albernaz é de 20 (vinte) dias, com início em 13/10/2021 e término em 1/11/2021.",
+        "id_documento_fonte": "2021-07-23_prt_portaria_198_2021"
+    },
+    {
+        "tipo": "Resumo",
+        "pergunta": "Em resumo, qual a principal decisão estabelecida pela Portaria nº 198, de 23 de julho de 2021, da ANEEL?",
+        "resposta_esperada": "A Portaria nº 198, de 23 de julho de 2021, da ANEEL, resolve conceder Licença para Capacitação à servidora Flávia de Faria Campos Albernaz, matrícula SIAPE nº 1769582, pelo período de 20 dias (de 13/10/2021 a 1/11/2021), para a realização de cursos online sobre 'Proteção de Dados Pessoais no Setor Público', 'Gestão de Equipes em Teletrabalho Remoto' e 'Inteligência Emocional'.",
+        "id_documento_fonte": "2021-07-23_prt_portaria_198_2021"
+    },
+    {
+        "tipo": "Fato Direto",
+        "pergunta": "Qual é o número de matrícula SIAPE do servidor Thiago Luiz Leite Ribeiro da Costa?",
+        "resposta_esperada": "O número de matrícula SIAPE do servidor Thiago Luiz Leite Ribeiro da Costa é 1570423.",
+        "id_documento_fonte": "2021-07-23_prt_portaria_199_2021"
+    },
+    {
+        "tipo": "Cruzamento/Raciocínio",
+        "pergunta": "Quais são os cursos que o servidor Thiago Luiz Leite Ribeiro da Costa realizará durante sua Licença para Capacitação?",
+        "resposta_esperada": "O servidor Thiago Luiz Leite Ribeiro da Costa realizará os cursos online ‘’Formação SQL com Microsoft SQL Server 2017’’, ‘’Formação Certificação ITIL 4 – Foundation’’ e ‘’Planejamento da Contratação de Soluções de TIC’’.",
+        "id_documento_fonte": "2021-07-23_prt_portaria_199_2021"
+    },
+    {
+        "tipo": "Resumo",
+        "pergunta": "Qual o objetivo principal da Portaria nº 199, de 23 de julho de 2021, da ANEEL?",
+        "resposta_esperada": "O objetivo principal da Portaria nº 199, de 23 de julho de 2021, da ANEEL é conceder Licença para Capacitação ao servidor Thiago Luiz Leite Ribeiro da Costa, matrícula SIAPE nº 1570423, pelo período de 30 dias (de 4/1/2022 a 2/2/2022), para a realização de cursos online.",
+        "id_documento_fonte": "2021-07-23_prt_portaria_199_2021"
+    },
+    {
+        "tipo": "Cruzamento/Raciocínio",
+        "pergunta": "Qual o período exato da Licença para Capacitação concedida ao servidor Sérgio Damasceno de Castro e quais cursos ele realizará?",
+        "resposta_esperada": "A licença é pelo período de 29 (vinte e nove) dias, de 1/9/2021 a 29/9/2021, para realização dos cursos online ‘’Métodos Ágeis’’ e ‘’Gestão da Inovação’’.",
+        "id_documento_fonte": "2021-07-23_prt_portaria_200_2021"
+    },
+    {
+        "tipo": "Resumo",
+        "pergunta": "Qual é a principal decisão estabelecida pela Portaria nº 200, de 23 de julho de 2021?",
+        "resposta_esperada": "A principal decisão da Portaria nº 200, de 23 de julho de 2021, é conceder Licença para Capacitação ao servidor Sérgio Damasceno de Castro, matrícula SIAPE nº 1663817, pelo período de 29 (vinte e nove) dias, de 1/9/2021 a 29/9/2021, para realização dos cursos online ‘’Métodos Ágeis’’ e ‘’Gestão da Inovação’’.",
+        "id_documento_fonte": "2021-07-23_prt_portaria_200_2021"
+    },
+    {
+        "tipo": "Fato Direto",
+        "pergunta": "Qual o número da matrícula SIAPE da servidora Susana Souza Tavares?",
+        "resposta_esperada": "A matrícula SIAPE da servidora Susana Souza Tavares é nº 2051358.",
+        "id_documento_fonte": "2021-07-23_prt_portaria_201_2021"
+    },
+    {
+        "tipo": "Cruzamento/Raciocínio",
+        "pergunta": "Qual a duração em dias da licença para capacitação concedida à servidora Susana Souza Tavares e quais os cursos online que ela realizará?",
+        "resposta_esperada": "A licença para capacitação concedida à servidora Susana Souza Tavares tem a duração de 30 dias. Ela realizará os cursos online ‘’Excel Intermediário’’, ‘’Excel Avançado’’, ‘’Power BI’’ e ‘’Análise de Dados – Fundamentos de Estatística’’.",
+        "id_documento_fonte": "2021-07-23_prt_portaria_201_2021"
+    },
+    {
+        "tipo": "Resumo",
+        "pergunta": "Qual a principal finalidade da Portaria nº 201, de 23 de julho de 2021, emitida pela ANEEL?",
+        "resposta_esperada": "A principal finalidade da Portaria nº 201, de 23 de julho de 2021, emitida pela ANEEL, é conceder Licença para Capacitação à servidora Susana Souza Tavares para a realização de cursos online, como Excel Intermediário e Avançado, Power BI e Análise de Dados.",
+        "id_documento_fonte": "2021-07-23_prt_portaria_201_2021"
+    },
+    {
+        "tipo": "Cruzamento/Raciocínio",
+        "pergunta": "Quais são as estações conversoras de frequência e os respectivos limites de potência para a importação e exportação de energia elétrica com a República Oriental do Uruguai, e qual a condição prévia para o uso dessas estações?",
+        "resposta_esperada": "A importação e a exportação com a República Oriental do Uruguai deverão ocorrer por meio da Estação Conversora de Frequência de Rivera, até 70 MW de potência e respectiva energia elétrica associada, localizada na fronteira dos Municípios de Rivera, Uruguai, e Santana do Livramento, Brasil, e da Estação Conversora de Frequência de Melo, até 500 MW de potência e respectiva energia elétrica associada, localizada no Município de Melo, Uruguai, próximo da fronteira com o Município de Jaguarão, no Estado do Rio Grande do Sul. A importação e a exportação com a República Oriental do Uruguai por meio das Estações Conversoras de Frequência de Rivera e de Melo deverão ser precedidas de Autorização ou Contrato para utilizar as respectivas Instalações de Transmissão de Interesse Restrito de que tratam a Resolução ANEEL nº 153, de 23 de maio de 2000, e a Resolução Autorizativa ANEEL nº 2.280, de 23 de fevereiro de 2010.",
+        "id_documento_fonte": "2021-07-23_prt_portaria_534_2021"
+    },
+    {
+        "tipo": "Resumo",
+        "pergunta": "Em resumo, qual é o propósito geral da Portaria nº 534/GM/MME, de 21 de julho de 2021, e qual a principal empresa beneficiada?",
+        "resposta_esperada": "A Portaria nº 534/GM/MME, de 21 de julho de 2021, resolve autorizar a Exponencial Energia Ltda. a importar e a exportar energia elétrica interruptível com a República Argentina e com a República Oriental do Uruguai.",
+        "id_documento_fonte": "2021-07-23_prt_portaria_534_2021"
+    },
+    {
+        "tipo": "Fato Direto",
+        "pergunta": "Qual é o combustível principal que será utilizado pela Usina Termelétrica Fênix?",
+        "resposta_esperada": "O combustível principal utilizado pela Usina Termelétrica Fênix será o cavaco de eucalipto.",
+        "id_documento_fonte": "2021-07-23_rea_resolu_o_autorizativa_10284_2021"
+    },
+    {
+        "tipo": "Cruzamento/Raciocínio",
+        "pergunta": "Quais são as condições para que a UTE Fênix receba o percentual de redução nas Tarifas de Uso dos Sistemas Elétricos de Transmissão e de Distribuição (TUST e TUSD)?",
+        "resposta_esperada": "O percentual de redução de 50% nas TUST e TUSD somente será aplicado se o início da operação de todas as unidades geradoras da UTE Fênix ocorrer no prazo estabelecido.",
+        "id_documento_fonte": "2021-07-23_rea_resolu_o_autorizativa_10284_2021"
+    },
+    {
+        "tipo": "Resumo",
+        "pergunta": "Qual é o principal objetivo da Resolução Autorizativa nº 10.284, de 20 de julho de 2021, e qual empresa é a beneficiária?",
+        "resposta_esperada": "A Resolução Autorizativa nº 10.284, de 20 de julho de 2021, tem como principal objetivo autorizar a Fênix Complexo Industrial S.A. a implantar e explorar a Usina Termelétrica Fênix, sob o regime de Produção Independente de Energia Elétrica, localizada no município de Alto Araguaia, no estado do Mato Grosso.",
+        "id_documento_fonte": "2021-07-23_rea_resolu_o_autorizativa_10284_2021"
+    },
+    {
+        "tipo": "Fato Direto",
+        "pergunta": "Em favor de qual empresa a ANEEL declarou a utilidade pública para desapropriação?",
+        "resposta_esperada": "A declaração de utilidade pública para desapropriação foi feita em favor da EDP Espírito Santo Distribuição de Energia S.A.",
+        "id_documento_fonte": "2021-07-23_rea_resolu_o_autorizativa_10297_2021"
+    },
+    {
+        "tipo": "Resumo",
+        "pergunta": "Qual o propósito principal da Resolução Autorizativa nº 10.297, de 13 de julho de 2021?",
+        "resposta_esperada": "O propósito principal da Resolução Autorizativa nº 10.297 é declarar de utilidade pública, para fins de desapropriação, uma área de terra necessária à implantação da Estação Repetidora Abel Santana, localizada em Cachoeiro de Itapemirim, Espírito Santo, em favor da EDP Espírito Santo Distribuição de Energia S.A.",
+        "id_documento_fonte": "2021-07-23_rea_resolu_o_autorizativa_10297_2021"
+    },
+    
+    {
+        "tipo": "Fato Direto",
+        "pergunta": "Qual é a capacidade instalada da unidade geradora UG2 da CGH Wasser Kraft?",
+        "resposta_esperada": "A unidade geradora UG2 da CGH Wasser Kraft possui 400 kW de capacidade instalada.",
+        "id_documento_fonte": "2016-01-29_dsp_despacho_244_2016"
+    },
+    {
+        "tipo": "Fato Direto",
+        "pergunta": "Qual é a potência instalada da EOL Marítimo Patos 1, conforme o Despacho Nº 374, de 16 de fevereiro de 2016?",
+        "resposta_esperada": "A potência instalada da EOL Marítimo Patos 1 é de 30.000 kW.",
+        "id_documento_fonte": "2016-02-29_dsp_despacho_374_2016"
+    },
+    {
+        "tipo": "Fato Direto",
+        "pergunta": "Quem é o Diretor-Geral da ANEEL que assina o Despacho Nº 1.842, de 12 de julho de 2016?",
+        "resposta_esperada": "ROMEU DONIZETE RUFINO.",
+        "id_documento_fonte": "2016-07-19_dsp_despacho_1842_2016"
+    },
+    {
+        "tipo": "Resumo",
+        "pergunta": "Qual é a principal decisão tomada pelo Despacho Nº 244, de 28 de janeiro de 2016, em relação à unidade geradora UG2 da CGH Wasser Kraft?",
+        "resposta_esperada": "O Despacho Nº 244, de 28 de janeiro de 2016, resolve liberar a unidade geradora UG2, de 400 kW de capacidade instalada, da CGH Wasser Kraft, para início da operação em teste a partir do dia 29 de janeiro de 2016, e estabelece as condições para a solicitação de sua operação comercial.",
+        "id_documento_fonte": "2016-01-29_dsp_despacho_244_2016"
+    },
+    {
+        "tipo": "Resumo",
+        "pergunta": "Qual é o principal objetivo do Despacho Nº 374, de 16 de fevereiro de 2016, emitido pela ANEEL?",
+        "resposta_esperada": "O principal objetivo do Despacho Nº 374, de 16 de fevereiro de 2016, é registrar o Recebimento do Requerimento de Outorga (DRO) da EOL Marítimo Patos 1 e de seu sistema de transmissão de interesse restrito, visando à Produção Independente de Energia Elétrica.",
+        "id_documento_fonte": "2016-02-29_dsp_despacho_374_2016"
+    },
+    {
+        "tipo": "Resumo",
+        "pergunta": "Qual a principal deliberação da ANEEL no Despacho Nº 1.842, de 12 de julho de 2016, em relação ao pedido de reconsideração?",
+        "resposta_esperada": "A principal deliberação da ANEEL é não conhecer do pedido de reconsideração apresentado pelas empresas Garças Energia e Participações S.A. e Desa Rio das Garças Desenvolvimento Energético S.A.",
+        "id_documento_fonte": "2016-07-19_dsp_despacho_1842_2016"
+    },
+    {
+        "tipo": "Cruzamento/Raciocínio",
+        "pergunta": "Quais são as condições estabelecidas pelo Despacho Nº 244 para que a Wasser Kraft Geração de Energia Elétrica Ltda. possa solicitar o início da operação comercial da unidade UG2, e qual resolução da ANEEL é referenciada para essas condições?",
+        "resposta_esperada": "A solicitação do início da operação comercial somente poderá ser efetuada após a conclusão da operação em teste. Além disso, a liberação estará condicionada à apresentação dos documentos originais exigidos no art. 5º da Resolução ANEEL nº 583, de 22 de outubro de 2013.",
+        "id_documento_fonte": "2016-01-29_dsp_despacho_244_2016"
+    },
+    {
+        "tipo": "Cruzamento/Raciocínio",
+        "pergunta": "Qual é o prazo de vigência do registro do Requerimento de Outorga para a EOL Marítimo Patos 1 e qual a consequência se esse prazo expirar em relação ao posicionamento dos aerogeradores?",
+        "resposta_esperada": "O registro vigorará pelo prazo de 12 (doze) meses, a contar de sua publicação. Expirado o prazo, o posicionamento dos aerogeradores será excluído do banco de dados georreferenciado da ANEEL, sem que esse ato possa ensejar qualquer responsabilidade à ANEEL ou ao Poder Concedente.",
+        "id_documento_fonte": "2016-02-29_dsp_despacho_374_2016"
+    },
+    {
+        "tipo": "Cruzamento/Raciocínio",
+        "pergunta": "Qual o motivo alegado pela ANEEL para não conhecer o pedido de reconsideração apresentado pelas empresas Garças Energia e Participações S.A. e Desa Rio das Garças Desenvolvimento Energético S.A?",
+        "resposta_esperada": "O motivo alegado pela ANEEL para não conhecer o pedido de reconsideração é que a esfera administrativa está exaurida.",
+        "id_documento_fonte": "2016-07-19_dsp_despacho_1842_2016"
+    },
+    {
+        "tipo": "Cruzamento/Raciocínio",
+        "pergunta": "Qual o período exato de vigência da prorrogação da jornada de trabalho reduzida para a servidora Luciana Sachetto Nascimento?",
+        "resposta_esperada": "A prorrogação da jornada de trabalho reduzida para a servidora Luciana Sachetto Nascimento tem vigência de 1 (um) ano, de 1º/9/2016 a 31/8/2017.",
+        "id_documento_fonte": "2016-08-12_prt_portaria_4103_2016"
+    }
+]

@@ -16,23 +16,22 @@ if str(raiz_projeto) not in sys.path:
     sys.path.append(str(raiz_projeto))
 
 try:
-    # Forma preferida: importa como modulo dentro da pasta rag_final.
-    from rag_final.rag_final import consultar_assistente_aneel
+    # Forma preferida: importa como modulo dentro da pasta RAG.
+    from RAG.RAG import consultar_assistente_aneel
 except ModuleNotFoundError:
-    # Fallback para ambientes em que rag_final e tratado como arquivo direto.
-    pasta_modulo_rag = raiz_projeto / "rag_final"
+    # Fallback para ambientes em que RAG e tratado como arquivo direto.
+    pasta_modulo_rag = raiz_projeto / "RAG"
     if str(pasta_modulo_rag) not in sys.path:
         sys.path.append(str(pasta_modulo_rag))
-    from rag_final import consultar_assistente_aneel
+    from RAG import consultar_assistente_aneel
 
 load_dotenv()  # Carrega variáveis de ambiente do arquivo .env, se existir
 
 def avaliar_rag_com_juiz(arquivo_dataset, arquivo_saida):
     # 1. Instanciando o Juiz
-    # Usamos temperature=0.0 para que o juiz seja totalmente determinístico, frio e analítico.
     juiz_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.0)
     
-    # 2. O Prompt da Tríade do RAG
+    # 2. O Prompt
     template_juiz = """Você é um auditor de qualidade técnico, estrito e imparcial.
     Sua tarefa é avaliar uma resposta gerada por um sistema RAG com base em Despachos da ANEEL.
 
@@ -125,7 +124,7 @@ def avaliar_rag_com_juiz(arquivo_dataset, arquivo_saida):
                     sucesso = True
                     print(f"✅ Notas -> Fid: {avaliacao['fidelidade']['nota']} | Rel. Resp: {avaliacao['relevancia_resposta']['nota']} | Rel. Ctx: {avaliacao['relevancia_contexto']['nota']}")
                     
-                    # Pausa suave para não acionar o rate limit nem na busca, nem na avaliação
+                    # Pausa suave para não acionar o rate limit
                     time.sleep(4)
                     
                 except Exception as e:
@@ -144,11 +143,10 @@ def avaliar_rag_com_juiz(arquivo_dataset, arquivo_saida):
         print("\n\n⚠️ Interrupção manual (Ctrl+C). Fechando o tribunal e salvando os votos...")
 
     # ==========================================
-    # PASSO C: GERAR O BOLETIM DE NOTAS (CSV)
+    # GERAR O BOLETIM DE NOTAS (CSV)
     # ==========================================
     if resultados_finais:
         df = pd.DataFrame(resultados_finais)
-        # utf-8-sig garante que os acentos do português fiquem perfeitos ao abrir no Excel
         df.to_csv(arquivo_saida, index=False, encoding='utf-8-sig') 
         
         print(f"\n📊 Relatório salvo com sucesso em: {arquivo_saida}")
@@ -164,8 +162,7 @@ def avaliar_rag_com_juiz(arquivo_dataset, arquivo_saida):
         print("Nenhum resultado foi processado.")
 
 if __name__ == "__main__":
-    # Vamos começar testando o dataset simples primeiro
-    arquivo_entrada = "teste_unitario2.json" # Altere para o nome exato do seu arquivo
-    arquivo_relatorio = "teste_fonte_uteis_complexo.csv"
+    arquivo_entrada = "testador_rag\\perguntas_teste_rag.json" # Altere para o nome exato do seu arquivo
+    arquivo_relatorio = "testador_rag\\teste_resultado.csv"
     
     avaliar_rag_com_juiz(arquivo_entrada, arquivo_relatorio)
