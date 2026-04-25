@@ -143,18 +143,17 @@ def consultar_assistente_aneel(pergunta_usuario: str) -> tuple[str, list[Documen
     
     return resposta_texto, documentos_utilizados_final
 
-#Código de teste
+# Código de teste para execução direta, permitindo interação via terminal
 if __name__ == "__main__":
-    pergunta = "Qual é a principal decisão tomada pelo Despacho Nº 244, de 28 de janeiro de 2016, em relação à unidade geradora UG2 da CGH Wasser Kraft?"
-    
-    resposta_texto, fontes_utilizadas = consultar_assistente_aneel(pergunta)
-    
-    print("\n" + "="*50)
-    print("RESPOSTA DO ASSISTENTE:")
-    print("="*50)
-    print(resposta_texto)
-    for i, doc in enumerate(fontes_utilizadas):
-        print(f"\n--- Documento Utilizado [{i+1}] ---")
-        print(f"ID: {doc.metadata.get('id_processo', 'Documento sem ID')}")
-        print(f"URL: {doc.metadata.get('url', 'Link não disponível')}")
-        print(f"Conteúdo: {doc.page_content[:500]}...")
+    try:
+        print("Bem-vindo ao Assistente da ANEEL! Digite sua pergunta ou pressione Ctrl+C para sair.")
+        while True:
+            pergunta = input("Digite sua pergunta para o Assistente da ANEEL: ")
+            resposta, docs = consultar_assistente_aneel(pergunta)
+            print("Resposta do Assistente:")
+            print(resposta)
+            print("\nDocumentos Utilizados:")
+            for doc in docs:
+                print(f"- ID: {doc.metadata.get('id_processo', 'N/A')}, URL: {doc.metadata.get('url', 'N/A')}")
+    except KeyboardInterrupt:
+        print("\nConsulta interrompida pelo usuário.")

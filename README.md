@@ -1,152 +1,316 @@
-# Pipeline RAG
+# 🔍 Pipeline RAG - ANEEL
 
-Este repositório contém o pipeline de construção de um sistema RAG desenvolvido para um desafio do Grupo de Estudos de NLP da Universidade Federal de Goiás.
+Sistema completo de RAG (Retrieval-Augmented Generation) para consultas sobre documentos da ANEEL, com recuperação híbrida (lexical + vetorial) e interface interativa.
 
-O projeto reúne os scripts utilizados nas etapas de coleta, normalização, parsing, chunking, geração de embeddings, indexação e execução de uma versão local do RAG ainda não adaptada para API.
+Desenvolvido para um desafio do Grupo de Estudos de NLP da Universidade Federal de Goiás.
 
 A API que encapsula este sistema está armazenada em outro repositório:
 
 Link do repositório da API: ([api_rag](https://github.com/kelvin-de-oliveira/api-rag))
 
-## Visão geral
+Todos os dados utilizados aqui podem ser encontrados neste ([dataset_huggingface](https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/tree/main))
 
-O pipeline trabalha com documentos da ANEEL e organiza o fluxo de preparação dos dados até a consulta em um sistema RAG.
+Desenvolvido para um desafio do Grupo de Estudos de NLP da Universidade Federal de Goiás.
 
-Este repositório inclui:
+## O que o pipeline faz
 
-- scripts para download de arquivos PDF, HTML e HTM;
-- script para limpeza e normalização de metadados;
-- script para extração de texto dos documentos;
-- script para divisão dos textos em chunks;
-- script para geração de embeddings e armazenamento em banco vetorial;
-- script para indexação lexical no Elasticsearch;
-- script com uma versão local do RAG ainda não encapsulada em API.
+- 📥 Coleta documentos em PDF, HTML e HTM da ANEEL
+- 🧹 Normaliza e limpa metadados dos registros
+- 📄 Extrai texto dos documentos com abordagem híbrida
+- ✂️ Divide os textos em chunks estruturados com overlap
+- 🧠 Gera embeddings vetoriais com Google Gemini
+- 🔎 Indexa os chunks lexicalmente no Elasticsearch
+- 💬 Consulta o RAG de forma interativa via terminal
+- 📚 Retorna respostas com citações de fontes e metadados
 
-## Módulos principais
+---
 
-### Coleta de documentos
+## 🏗️ Arquitetura do Pipeline
 
-Disponível em `parsing/scrapping`:
+O sistema segue um fluxo bem definido de preparação e consulta de dados:
 
-- `scrapper.py`
-- `html_downloader.py`
+```
+Documentos Brutos (PDF/HTML/HTM)
+       ↓
+Limpeza de Metadados
+       ↓
+Extração de Texto
+       ↓
+Chunking com Overlap
+       ↓
+Embeddings Vetoriais (Gemini)    ←→    Indexação Lexical (Elasticsearch)
+       ↓                                      ↓
+ChromaDB (Banco Vetorial)        +      Índice BM25
+       ↓                                      ↓
+       └─────→ Recuperação Híbrida ←────────┘
+                     ↓
+         LLM Generation (Gemini 2.5)
+                     ↓
+         Resposta com Citações e Fontes
+```
 
-#### `scrapper.py`
+---
 
-Script responsável pelo download dos PDFs a partir dos arquivos JSON de entrada.
+## 📂 Estrutura de Diretórios
 
-Ele percorre os registros presentes nos JSONs, identifica os documentos associados a cada registro e tenta baixar os arquivos PDF encontrados.
+```
+NLP/
+├── parsing/                      # Coleta, limpeza e extração de texto
+│   ├── scrapping/
+│   │   ├── scrapper.py          # Download de PDFs
+│   │   └── html_downloader.py   # Download de HTML/HTM
+│   ├── clean_and_normalize_metadata.py
+│   ├── extracting_text_mp.py    # Extração com multiprocessing
+│   └── README.md
+├── chunking/                     # Divisão em chunks
+│   ├── chunking.py
+│   ├── requirements.txt
+│   └── README.md
+├── embedding/                    # Geração de embeddings vetoriais
+│   ├── embedding.py
+│   ├── requirements.txt
+│   └── README.md
+├── gerador_elasticsearch/        # Indexação lexical
+│   ├── gerador_elasticsearch.py
+│   └── README.md
+├── RAG/                          # Sistema RAG interativo
+│   ├── RAG.py                   # Execução local interativa
+│   └── README.md
+├── json_parsed/                  # Documentos JSON normalizados
+├── chunks/                       # Chunks gerados
+├── banco_chroma/                 # Banco vetorial ChromaDB
+├── embedding_checkpoint.txt      # Checkpoint do embedding
+├── requirements.txt              # Dependências globais
+└── README.md
+```
 
-Neste módulo, `cloudscraper` é usado para criar uma sessão HTTP com comportamento semelhante ao de um navegador. A biblioteca `requests` é usada como base para as requisições HTTP, enquanto `urllib3 Retry` e `HTTPAdapter` são utilizados para configurar retentativas automáticas em casos de falhas temporárias, como erros 429, 500, 502, 503 e 504.
+---
 
-O `ThreadPoolExecutor` é utilizado para permitir downloads em paralelo, conforme a quantidade de workers configurada.
+## 📋 Sequência de Módulos
 
-Além do download dos arquivos, o script também gera relatórios de execução. Em caso de falhas, são produzidos relatórios em CSV e JSON com informações como URL, nome do arquivo, data do registro, título, tipo do PDF, tipo do erro, mensagem de erro, status HTTP, número de tentativas e prévia da resposta recebida.
+### 1️⃣ Coleta de Documentos
 
-#### `html_downloader.py`
+**Pasta:** `parsing/scrapping/`
 
-Script responsável pelo download de arquivos HTML e HTM a partir de um CSV contendo as colunas `url` e `data_registro`.
+**Descrição:** Download de arquivos PDF, HTML e HTM da ANEEL com retry automático e relatórios.
 
-Esse CSV foi gerado a partir do relatório de erro do `scrapper.py`, contemplando documentos que não foram obtidos como PDF e precisaram ser tratados como páginas HTML/HTM.
+- `scrapper.py`: Download paralelo de PDFs com tratamento de erros
+- `html_downloader.py`: Download de HTML/HTM como fallback
 
-Neste módulo, `cloudscraper` também é usado para criar uma sessão HTTP com características de navegador. Quando essa criação não é possível, o script usa `requests.Session` como alternativa. O `Retry` e o `HTTPAdapter` são utilizados para configurar retentativas em falhas temporárias de requisição.
+Gera relatórios de erro em CSV e JSON com informações detalhadas de falhas.
 
-O script salva os arquivos HTML/HTM em pastas organizadas pela data do registro. Ele também faz controle de tentativas em caso de falhas HTTP, como 403, 429 e 503, aplica pausas entre requisições e evita baixar novamente arquivos que já existem no diretório de destino.
+**Veja:** [parsing/README.md](parsing/README.md) para mais detalhes.
 
-### Normalização de metadados
+---
 
-Disponível em `parsing`:
+### 2️⃣ Normalização de Metadados
 
-- `clean_and_normalize_metadata.py`
+**Pasta:** `parsing/`
 
-Script responsável por normalizar os metadados dos registros da ANEEL para o modelo utilizado nas próximas etapas do pipeline.
+**Arquivo:** `clean_and_normalize_metadata.py`
 
-Ele normaliza tipos de documentos, datas, ementa, assunto, situação e demais campos presentes nos registros.
+Normaliza campos como tipo de documento, datas, ementa, assunto, situação e demais campos dos registros para um modelo consistente.
 
-### Parsing
+---
 
-Disponível em `parsing`:
+### 3️⃣ Extração de Texto
 
-- `extracting_text_mp.py`
+**Pasta:** `parsing/`
 
-Script responsável pela extração de texto dos arquivos PDF, HTML e HTM.
+**Arquivo:** `extracting_text_mp.py`
 
-A extração é feita com uma abordagem híbrida: para arquivos PDF, utiliza `fitz` e `pdfplumber`; para arquivos HTML e HTM, utiliza `BeautifulSoup`. O script também usa `sqlite3` para controle de progresso, `logging` para geração de logs, `argparse` para receber os diretórios de entrada e saída, e `multiprocessing` para processamento paralelo.
+Extração híbrida com processamento paralelo:
 
-As extensões suportadas pelo módulo são `.pdf`, `.html` e `.htm`.
+- **PDFs:** `fitz` + `pdfplumber` (inclui detecção e extração de tabelas)
+- **HTML/HTM:** `BeautifulSoup` (converte tabelas para Markdown)
 
-Em PDFs, o script detecta páginas com tabelas usando `fitz` e extrai tabelas com `pdfplumber`, convertendo-as para Markdown quando necessário. Em HTML/HTM, o script remove tags como `script`, `style`, `nav`, `header` e `footer`, extrai o texto com `BeautifulSoup` e também converte tabelas HTML para Markdown.
+Converte tabelas em Markdown, usa SQLite para controle de progresso e suporta multiprocessing.
 
-O resultado da extração é salvo de volta nos JSONs, preenchendo os campos `texto_extraido`, `texto_extraido_md` e `tem_tabela`. O processamento é feito com workers configuráveis, e o progresso é registrado em SQLite pelo processo principal.
+**Extensões suportadas:** `.pdf`, `.html`, `.htm`
 
-### Chunking
+---
 
-Disponível em `chunking`:
+### 4️⃣ Chunking
 
-- `chunking.py`
+**Pasta:** `chunking/`
 
-Script responsável pela divisão dos textos extraídos em chunks.
+**Arquivo:** `chunking.py`
 
-Ele usa `MarkdownHeaderTextSplitter` e `RecursiveCharacterTextSplitter`, ambos de `langchain_text_splitters`.
+Divisão em duas etapas:
 
-O processo é feito em duas etapas:
+1. **Separação estrutural** por cabeçalhos Markdown (`#`, `##`, `###`)
+2. **Divisão recursiva** com `chunk_size=1024` e `chunk_overlap=154`
 
-1. divisão estrutural por cabeçalhos Markdown;
-2. divisão recursiva de segurança com `chunk_size=1024` e `chunk_overlap=154`.
+- **Entrada:** `json_parsed/`
+- **Saída:** `chunks/chunks.jsonl` (formato LangChain)
 
-Os chunks são salvos no arquivo `chunks/chunks.jsonl`, mantendo `page_content` e `metadata` em formato compatível com LangChain.
+Inclui controle de checkpoints e registro de erros.
 
-O script também possui controle de checkpoints, registro de erros e contagem total de chunks gerados.
+**Veja:** [chunking/README.md](chunking/README.md)
 
-### Embedding
+---
 
-Disponível em `embedding`:
+### 5️⃣ Embeddings Vetoriais
 
-- `embedding.py`
+**Pasta:** `embedding/`
 
-Script responsável por gerar embeddings a partir dos chunks salvos em `chunks/chunks.jsonl`.
+**Arquivo:** `embedding.py`
 
-Ele usa:
+Gera embeddings com `GoogleGenerativeAIEmbeddings` (modelo: `models/gemini-embedding-001`).
 
-- `langchain_google_genai`;
-- `GoogleGenerativeAIEmbeddings`;
-- `langchain_chroma`;
-- `Chroma`;
-- `langchain_core.documents.Document`;
-- `dotenv`;
-- `tqdm`.
+- **Entrada:** `chunks/chunks.jsonl`
+- **Saída:** `banco_chroma/` (banco vetorial persistido)
+- **Checkpoint:** `embedding_checkpoint.txt` (para retomar execução)
 
-O modelo configurado para embeddings é `models/gemini-embedding-001`.
+Processamento em lotes de 100 documentos com retry exponencial.
 
-O banco vetorial é persistido no diretório `banco_chroma`.
+**Veja:** [embedding/README.md](embedding/README.md)
 
-O processamento é feito em lotes de 100 documentos, com checkpoint em `embedding_checkpoint.txt`. O script também possui retry exponencial para lidar com erros ou limites da API.
+---
 
-### Indexação lexical
+### 6️⃣ Indexação Lexical
 
-Disponível em `gerador_elasticsearch`:
+**Pasta:** `gerador_elasticsearch/`
 
-- `gerador_elasticsearch.py`
+**Arquivo:** `gerador_elasticsearch.py`
 
-Script responsável por popular um índice do Elasticsearch a partir do arquivo `chunks/chunks.jsonl`.
+Popula índice Elasticsearch com estratégia BM25 para busca lexical.
 
-Ele usa `langchain_elasticsearch.ElasticsearchStore` com estratégia `BM25RetrievalStrategy`.
+- **URL Elasticsearch:** `http://localhost:9200`
+- **Índice:** `aneel_lexical`
+- **Tamanho de lote:** `500`
+- **Entrada:** `chunks/chunks.jsonl`
 
-Configurações presentes no arquivo:
+**Veja:** [gerador_elasticsearch/README.md](gerador_elasticsearch/README.md)
 
-- URL do Elasticsearch: `http://localhost:9200`;
-- nome do índice: `aneel_lexical`;
-- tamanho do lote: `500`;
-- arquivo de entrada: `chunks/chunks.jsonl`.
+---
 
-### Versão local do RAG
+### 7️⃣ Consulta RAG Interativa
 
-Disponível em `RAG`:
+**Pasta:** `RAG/`
 
-- `RAG.py`
+**Arquivo:** `RAG.py`
 
-Este arquivo contém uma versão local do sistema RAG ainda não adaptada para API.
+Sistema RAG completo com recuperação híbrida e interface interativa:
 
-Ele usa recuperação híbrida, combinando busca lexical com Elasticsearch/BM25 e busca vetorial com ChromaDB/Gemini Embeddings.
+- **Recuperação:** 60% lexical (Elasticsearch BM25) + 40% vetorial (ChromaDB)
+- **LLM:** `gemini-2.5-flash`
+- **Embeddings:** `models/gemini-embedding-001`
+- **Interface:** Terminal interativo com loop de perguntas (nesse protótipo)
 
-O modelo generativo configurado é `gemini-2.5-flash`, e o modelo de embedding configurado é `models/gemini-embedding-001`.
+Retorna respostas com citações de fontes e metadados dos documentos consultados.
+
+**Veja:** [RAG/README.md](RAG/README.md)
+
+---
+
+## 🚀 Como Começar
+
+### Pré-requisitos
+
+- **Python 3.10+**
+- **Elasticsearch** rodando em `http://localhost:9200`
+- **Google Generative AI API key** (de https://ai.google.dev)
+
+### 1. Configuração Inicial
+
+```bash
+# Acesse o repositório
+cd NLP
+
+# Crie um arquivo .env na raiz com sua chave de API
+echo 'GEMINI_API_KEY="sua_chave_aqui"' > .env
+
+# Instale as dependências globais
+pip install -r requirements.txt
+```
+
+### 2. Prepare os Dados (Sequencialmente)
+
+```bash
+# 1. Normalizar metadados
+python parsing/clean_and_normalize_metadata.py
+
+# 2. Extrair texto dos documentos
+python parsing/extracting_text_mp.py
+
+# 3. Gerar chunks
+python chunking/chunking.py
+
+# 4. Gerar embeddings (pode demorar bastante)
+python embedding/embedding.py
+
+# 5. Indexar no Elasticsearch (requer ES rodando)
+python gerador_elasticsearch/gerador_elasticsearch.py
+```
+
+### 3. Use o RAG
+
+```bash
+# Modo interativo
+python RAG/RAG.py
+```
+
+**Como usar:**
+- Digite sua pergunta
+- Pressione Enter
+- Receba resposta com citações de fontes
+- Repita ou pressione **Ctrl+C** para sair
+
+---
+
+## 📦 Dependências
+
+### Globais (requirements.txt)
+
+```
+langchain
+langchain-core
+langchain-community
+langchain-text-splitters
+langchain-google-genai
+langchain-chroma
+langchain-elasticsearch
+python-dotenv
+tqdm
+```
+
+### Específicas por Etapa
+
+Algumas pastas possuem seu próprio `requirements.txt`. Para instalar apenas as dependências de um módulo:
+
+```bash
+pip install -r embedding/requirements.txt      # Apenas embedding
+pip install -r chunking/requirements.txt       # Apenas chunking
+pip install -r parsing/requirements.txt
+```
+
+---
+
+## 📊 Fluxo de Dados (Entrada/Saída)
+
+| Etapa | Entrada | Saída |
+|-------|---------|-------|
+| Coleta | URLs (CSV/JSON) | Arquivos PDF/HTML/HTM |
+| Normalização | JSON brutos | `json_parsed/` (JSON normalizados) |
+| Extração | PDF/HTML/HTM | JSON com `texto_extraido` e `texto_extraido_md` |
+| Chunking | `json_parsed/` | `chunks/chunks.jsonl` |
+| Embeddings | `chunks/chunks.jsonl` | `banco_chroma/` |
+| Elasticsearch | `chunks/chunks.jsonl` | Índice `aneel_lexical` |
+| RAG | Pergunta (terminal) | Resposta + Fontes + Metadados |
+
+---
+
+## 📝 Observações
+
+- ✅ O pipeline foi desenvolvido para documentos da ANEEL, mas pode ser adaptado para outras fontes
+- ✅ A qualidade das respostas do RAG depende diretamente da qualidade da indexação e dos chunks
+- ✅ Os modelos Gemini requerem conexão com internet
+- ✅ É perfeitamente possível utilizar esse RAG com o Nível Gratuito do Gemini
+- ✅ O Elasticsearch deve estar rodando antes de executar a indexação
+
+---
+
+## 👥 Desenvolvimento
+
+Desenvolvido como projeto de aprendizado e pesquisa em NLP pelo Grupo de Estudos de NLP da UFG.

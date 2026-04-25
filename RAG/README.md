@@ -61,7 +61,19 @@ Na raiz do projeto:
 python RAG/RAG.py
 ```
 
-O bloco `if __name__ == "__main__":` contém uma pergunta de teste que pode ser alterada.
+### Modo interativo
+
+O script executa **modo interativo**, permitindo fazer múltiplas perguntas em sequência:
+
+```
+Digite sua pergunta para o Assistente da ANEEL: Qual é a potência instalada?
+Resposta do Assistente:
+...
+```
+
+Para sair do loop interativo, pressione **Ctrl+C** (ou Cmd+C no Mac).
+
+O bloco `if __name__ == "__main__":` implementa um loop com tratamento de interrupção via teclado (`KeyboardInterrupt`).
 
 ## Função principal
 
@@ -92,4 +104,5 @@ Após a geração, o script:
 
 - Se o modelo não citar documentos, a seção de fontes não é anexada.
 - A qualidade da resposta depende diretamente da indexação prévia em Chroma e Elasticsearch.
-- O script é uma versão local de teste e não expõe endpoint HTTP.
+- O script suporta execução **interativa** via terminal, permitindo múltiplas consultas sem reinicializar.
+- O script é uma versão local de teste e não expõe endpoint.
