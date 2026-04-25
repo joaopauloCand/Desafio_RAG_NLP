@@ -82,6 +82,7 @@ NLP/
 ├── chunks/                       # Chunks gerados
 ├── banco_chroma/                 # Banco vetorial ChromaDB
 ├── embedding_checkpoint.txt      # Checkpoint do embedding
+├── setup.py                      # Setup automatizado (pode ser necessário mais testes)
 ├── requirements.txt              # Dependências globais
 └── README.md
 ```
@@ -228,6 +229,39 @@ pip install -r requirements.txt
 ```
 
 ### 2. Prepare os Dados (Sequencialmente)
+
+#### Opção A: Setup Automatizado (`setup.py`)
+
+O projeto inclui um setup com duas estratégias:
+
+1. Fluxo padrão (já existente): baixa `banco_chroma` e `chunks` e prepara o ambiente.
+2. Fluxo por etapa (`--from-*`): inicia do ponto desejado em diante.
+
+Execução padrão:
+
+```bash
+python setup.py
+```
+
+Execução a partir de uma etapa específica:
+
+```bash
+python setup.py --from-download-jsons
+python setup.py --from-extract-jsons
+python setup.py --from-credentials
+python setup.py --from-install
+python setup.py --from-chunking
+python setup.py --from-embedding
+python setup.py --from-elasticsearch
+```
+
+Observações do modo `--from-*`:
+
+- usa o ZIP de `json_parsed` configurado em `URL_DOWNLOAD_JSON_PARSED` dentro de `setup.py`;
+- executa da etapa escolhida até o final (não executa etapas anteriores);
+- ideal para retomar execução sem repetir todo o bootstrap.
+
+#### Opção B: Execução Manual por Etapas
 
 ```bash
 # 1. Normalizar metadados

@@ -1,3 +1,4 @@
+import argparse
 import os
 import sys
 import zipfile
@@ -9,10 +10,13 @@ from tqdm import tqdm
 # --- CONFIGURAÇÕES ---
 URL_DOWNLOAD_BANCO = "https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/banco_chroma.zip?download=true"
 URL_DOWNLOAD_CHUNKS = "https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/chunks.zip?download=true"
+URL_DOWNLOAD_JSON_PARSED = "https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/json_parsed.zip?download=true"
 NOME_ZIP_BANCO = "banco_chroma.zip"
 NOME_ZIP_CHUNKS = "chunks.zip"
+NOME_ZIP_JSON_PARSED = "json_parsed.zip"
 PASTA_BANCO = "banco_chroma"
 ARQUIVO_CHUNKS = "chunks\\chunks.jsonl"
+PASTA_JSON_PARSED = "json_parsed"
 FICHEIRO_ENV = ".env"
 REQUISITOS = "requirements.txt"
 
@@ -114,6 +118,56 @@ def baixar_chunks()-> bool:
         print_status("Download dos chunks falhou.", False)
         return False
 
+def baixar_json_parsed()-> bool:
+    """Baixa o ZIP de json_parsed para iniciar pipeline a partir de chunking."""
+    if "<ADICIONAR_LINK_DO_ZIP_JSON_PARSED_AQUI>" in URL_DOWNLOAD_JSON_PARSED:
+        print_status(
+            "URL_DOWNLOAD_JSON_PARSED ainda nao foi configurada no setup.py.",
+            False,
+        )
+        return False
+
+    arquivo_zip = Path(NOME_ZIP_JSON_PARSED)
+    pasta_jsons = Path(PASTA_JSON_PARSED)
+
+    if pasta_jsons.exists() and pasta_jsons.is_dir():
+        print_status(f"'{PASTA_JSON_PARSED}' já está pronto.")
+        return True
+
+    if arquivo_zip.exists():
+        print_status(f"'{NOME_ZIP_JSON_PARSED}' já está pronto.")
+        return True
+
+    print("A baixar os JSONs parseados...")
+    print("Isso pode demorar dependendo da sua ligação à internet.")
+
+    try:
+        resposta = requests.get(URL_DOWNLOAD_JSON_PARSED, stream=True)
+        resposta.raise_for_status()
+
+        tamanho_total = int(resposta.headers.get('content-length', 0))
+
+        with open(arquivo_zip, 'wb') as ficheiro, tqdm(
+            desc=NOME_ZIP_JSON_PARSED,
+            total=tamanho_total,
+            unit='iB',
+            unit_scale=True,
+            unit_divisor=1024,
+        ) as barra:
+            for chunk in resposta.iter_content(chunk_size=8192):
+                tamanho = ficheiro.write(chunk)
+                barra.update(tamanho)
+
+        print_status("Download dos JSONs parseados concluído com sucesso!")
+        return True
+
+    except requests.exceptions.RequestException as e:
+        print_status(f"Erro ao tentar baixar os JSONs parseados: {e}", False)
+        if arquivo_zip.exists():
+            arquivo_zip.unlink()
+        print_status("Download dos JSONs parseados falhou.", False)
+        return False
+
 def print_status(mensagem: str, sucesso: bool = True) -> None:
     """Imprime uma mensagem de status formatada com um símbolo visual para sucesso ou falha."""
     prefixo = "OK" if sucesso else "ERRO"
@@ -165,6 +219,32 @@ def extrair_chunks_jsonl()-> bool:
         print_status(f"Erro ao extrair o arquivo: {e}", False)
         return False
 
+def extrair_json_parsed()-> bool:
+    """Extrai o ZIP com json_parsed quando iniciar o setup pela fase de chunking."""
+    pasta_jsons = Path(PASTA_JSON_PARSED)
+    arquivo_zip = Path(NOME_ZIP_JSON_PARSED)
+
+    if pasta_jsons.exists() and pasta_jsons.is_dir():
+        print_status(f"A pasta '{PASTA_JSON_PARSED}' já está pronta.")
+        return True
+
+    if not arquivo_zip.exists():
+        print_status(
+            f"Ficheiro '{NOME_ZIP_JSON_PARSED}' não encontrado. Certifique-se de que o ZIP está na raiz.",
+            False,
+        )
+        return False
+
+    print("A descompactar os JSONs parseados... Isto pode demorar um pouco.")
+    try:
+        with zipfile.ZipFile(arquivo_zip, 'r') as zip_ref:
+            zip_ref.extractall(".")
+        print_status("Descompactação dos JSONs parseados concluída com sucesso.")
+        return True
+    except Exception as e:
+        print_status(f"Erro ao extrair os JSONs parseados: {e}", False)
+        return False
+
 def verificar_api_key()-> bool:
     """Verifica se a GEMINI_API_KEY está configurada no sistema ou no .env."""
     # 1. Tenta Variável de Ambiente do Sistema
@@ -205,6 +285,57 @@ def instalar_dependencias()-> bool:
         print_status(f"Falha ao instalar dependências: {e}", False)
         return False
 
+def executar_chunking()-> bool:
+    """Executa a etapa de chunking a partir de json_parsed/."""
+    print("A executar a etapa de chunking...")
+    try:
+        subprocess.check_call([sys.executable, "chunking/chunking.py"])
+        print_status("Chunking concluído com sucesso.")
+        return True
+    except Exception as e:
+        print_status(f"Falha ao executar chunking: {e}", False)
+        return False
+
+def executar_embedding()-> bool:
+    """Executa a etapa de geração de embeddings."""
+    print("A executar a etapa de embedding...")
+    try:
+        subprocess.check_call([sys.executable, "embedding/embedding.py"])
+        print_status("Embedding concluído com sucesso.")
+        return True
+    except Exception as e:
+        print_status(f"Falha ao executar embedding: {e}", False)
+        return False
+
+def executar_elasticsearch()-> bool:
+    """Executa a etapa de indexação no Elasticsearch."""
+    print("A executar a etapa de indexação lexical (Elasticsearch)...")
+    try:
+        subprocess.check_call([sys.executable, "gerador_elasticsearch/gerador_elasticsearch.py"])
+        print_status("Indexação no Elasticsearch concluída com sucesso.")
+        return True
+    except Exception as e:
+        print_status(f"Falha ao executar indexação no Elasticsearch: {e}", False)
+        return False
+
+def obter_passos_chunking_em_diante(etapa_inicial: str) -> list[tuple[str, callable]]:
+    """Retorna os passos do fluxo chunking->embedding->elasticsearch a partir da etapa escolhida."""
+    passos = [
+        ("Download de JSONs Parseados", baixar_json_parsed, "download-jsons"),
+        ("Extração de JSONs Parseados", extrair_json_parsed, "extract-jsons"),
+        ("Verificação de Credenciais", verificar_api_key, "credentials"),
+        ("Instalação de Bibliotecas", instalar_dependencias, "install"),
+        ("Etapa de Chunking", executar_chunking, "chunking"),
+        ("Etapa de Embedding", executar_embedding, "embedding"),
+        ("Etapa de Elasticsearch", executar_elasticsearch, "elasticsearch"),
+    ]
+
+    inicio = next((i for i, item in enumerate(passos) if item[2] == etapa_inicial), None)
+    if inicio is None:
+        return []
+
+    return [(nome, acao) for nome, acao, _ in passos[inicio:]]
+
 #Função não utilizada no momento, já que a utilização do Docker foi deixada para o script de deploy. Mantida aqui para referência futura caso queira integrar a gestão do Docker no setup.
 """ def gerir_docker() -> bool:
     #Inicia os serviços via Docker Compose.
@@ -222,20 +353,80 @@ def instalar_dependencias()-> bool:
         return False """
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Setup do projeto RAG ANEEL."
+    )
+    grupo_from = parser.add_mutually_exclusive_group()
+    grupo_from.add_argument(
+        "--from-download-jsons",
+        action="store_true",
+        help="Inicia no download de JSONs parseados (fluxo chunking em diante).",
+    )
+    grupo_from.add_argument(
+        "--from-extract-jsons",
+        action="store_true",
+        help="Inicia na extração de JSONs parseados (fluxo chunking em diante).",
+    )
+    grupo_from.add_argument(
+        "--from-credentials",
+        action="store_true",
+        help="Inicia na verificação de credenciais (fluxo chunking em diante).",
+    )
+    grupo_from.add_argument(
+        "--from-install",
+        action="store_true",
+        help="Inicia na instalação de bibliotecas (fluxo chunking em diante).",
+    )
+    grupo_from.add_argument(
+        "--from-chunking",
+        action="store_true",
+        help="Inicia na etapa de chunking (fluxo chunking -> embedding -> elasticsearch).",
+    )
+    grupo_from.add_argument(
+        "--from-embedding",
+        action="store_true",
+        help="Inicia na etapa de embedding (fluxo embedding -> elasticsearch).",
+    )
+    grupo_from.add_argument(
+        "--from-elasticsearch",
+        action="store_true",
+        help="Inicia na etapa de indexação no Elasticsearch.",
+    )
+    args = parser.parse_args()
+
     print("\n" + "="*50)
     print("SISTEMA DE SETUP - RAG ANEEL")
     print("="*50 + "\n")
 
     # Ordem de execução
-    passos = [
-        ("Download de Dados", baixar_banco_de_dados),
-        ("Download de Chunks", baixar_chunks),
-        ("Extração de Dados", extrair_banco_de_dados),
-        ("Extração de Chunks", extrair_chunks_jsonl),
-        ("Verificação de Credenciais", verificar_api_key),
-        ("Instalação de Bibliotecas", instalar_dependencias)#,
-        #("Inicialização da Infraestrutura", gerir_docker) 
-    ]
+    etapa_inicial = None
+    if args.from_download_jsons:
+        etapa_inicial = "download-jsons"
+    elif args.from_extract_jsons:
+        etapa_inicial = "extract-jsons"
+    elif args.from_credentials:
+        etapa_inicial = "credentials"
+    elif args.from_install:
+        etapa_inicial = "install"
+    elif args.from_chunking:
+        etapa_inicial = "chunking"
+    elif args.from_embedding:
+        etapa_inicial = "embedding"
+    elif args.from_elasticsearch:
+        etapa_inicial = "elasticsearch"
+
+    if etapa_inicial is not None:
+        passos = obter_passos_chunking_em_diante(etapa_inicial)
+    else:
+        passos = [
+            ("Download de Dados", baixar_banco_de_dados),
+            ("Download de Chunks", baixar_chunks),
+            ("Extração de Dados", extrair_banco_de_dados),
+            ("Extração de Chunks", extrair_chunks_jsonl),
+            ("Verificação de Credenciais", verificar_api_key),
+            ("Instalação de Bibliotecas", instalar_dependencias),
+            #("Inicialização da Infraestrutura", gerir_docker)
+        ]
 
     for nome, acao in passos:
         if not acao():
