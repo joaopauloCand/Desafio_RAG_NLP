@@ -331,8 +331,8 @@ def main():
                         help="Pasta com JSONs normalizados (clean_metadata)")
     parser.add_argument("--files-dir", "-f", required=True,
                         help="Pasta com arquivos baixados (aneel_pdfs)")
-    parser.add_argument("--output-dir", "-o", default="./parsed",
-                        help="Pasta de saída com JSONs completos (padrão: ./parsed)")
+    parser.add_argument("--output-dir", "-o", default="json_parsed",
+                        help="Pasta de saída com JSONs completos (padrão: json_parsed)")
     parser.add_argument("--log-dir", "-l", default="./logs",
                         help="Pasta de logs (padrão: ./logs)")
     parser.add_argument("--db", default="./parsing_progresso.db",

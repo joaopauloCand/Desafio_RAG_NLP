@@ -84,7 +84,7 @@ python parsing/clean_and_normalize_metadata.py -i json_teste -o clean_metadata
 
 - `--metadata-dir` (`-m`) obrigatório;
 - `--files-dir` (`-f`) obrigatório;
-- `--output-dir` (`-o`) opcional, padrão: `./parsed`;
+- `--output-dir` (`-o`) opcional, padrão: `json_parsed`;
 - `--log-dir` (`-l`) opcional, padrão: `./logs`;
 - `--db` opcional, padrão: `./parsing_progresso.db`;
 - `--workers` (`-w`) opcional, padrão: `4`.
