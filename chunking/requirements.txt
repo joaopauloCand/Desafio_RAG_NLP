@@ -1,0 +1,2 @@
+tqdm
+langchain-text-splitters
