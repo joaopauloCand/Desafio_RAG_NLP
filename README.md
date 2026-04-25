@@ -2,6 +2,8 @@
 
 Sistema completo de RAG (Retrieval-Augmented Generation) para consultas sobre documentos da ANEEL, com recuperação híbrida (lexical + vetorial) e interface interativa.
 
+O pipeline foi desenvolvido para documentos da ANEEL, mas pode ser adaptado para outras fontes.
+
 Desenvolvido para um desafio do Grupo de Estudos de NLP da Universidade Federal de Goiás.
 
 A API que encapsula este sistema está armazenada em outro repositório:
