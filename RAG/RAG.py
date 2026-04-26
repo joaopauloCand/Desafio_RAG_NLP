@@ -5,6 +5,8 @@ from langchain_core.prompts import PromptTemplate
 from langchain_classic.retrievers import EnsembleRetriever 
 from langchain_core.documents import Document
 from dotenv import load_dotenv
+import importlib
+import os
 import re
 
 # ==========================================
@@ -12,11 +14,54 @@ import re
 # ==========================================
 
 load_dotenv() # Carrega a chave de API do Google do arquivo .env, se existir
-DIRETORIO_CHROMA = "banco_chroma"
+DIRETORIO_CHROMA_GEMINI = "banco_chroma"
+DIRETORIO_CHROMA_BGE_M3 = "banco_chroma_bgem3"
 MODEL_EMBEDDING = "models/gemini-embedding-001"
 MODEL_GENERATIVE = "gemini-2.5-flash"
 DOCKER_ELASTICSEARCH_URL = "http://localhost:9200"
 ELASTICSEARCH_INDEX_NAME = "aneel_lexical"
+
+
+def carregar_classe_hf_embeddings():
+    """Resolve HuggingFaceEmbeddings em pacotes LangChain novos e antigos."""
+    modulos_candidatos = [
+        "langchain_huggingface",
+        "langchain_community.embeddings",
+    ]
+
+    for modulo in modulos_candidatos:
+        try:
+            return getattr(importlib.import_module(modulo), "HuggingFaceEmbeddings")
+        except Exception:
+            continue
+
+    raise ImportError(
+        "Nao foi possivel importar HuggingFaceEmbeddings. "
+        "Instale as dependencias de embedding open source antes de usar EMBEDDING_MODEL=BAAI/bge-m3."
+    )
+
+
+def selecionar_embedding():
+    """Seleciona embedding e banco vetorial com base em EMBEDDING_MODEL."""
+    embedding_model = os.getenv("EMBEDDING_MODEL", "GEMINI").strip()
+
+    if embedding_model == "BAAI/bge-m3":
+        hf_embeddings_cls = carregar_classe_hf_embeddings()
+        embeddings = hf_embeddings_cls(
+            model_name="BAAI/bge-m3",
+            model_kwargs={"device": "cpu"},
+            encode_kwargs={"normalize_embeddings": True, "batch_size": 16},
+        )
+        return embeddings, DIRETORIO_CHROMA_BGE_M3, "BAAI/bge-m3"
+
+    if embedding_model not in ("", "GEMINI"):
+        print(
+            f"Aviso: EMBEDDING_MODEL='{embedding_model}' invalido. "
+            "Usando rota padrao GEMINI."
+        )
+
+    embeddings = GoogleGenerativeAIEmbeddings(model=MODEL_EMBEDDING)
+    return embeddings, DIRETORIO_CHROMA_GEMINI, "GEMINI"
 
 def consultar_assistente_aneel(pergunta_usuario: str) -> tuple[str, list[Document]]:
     """Função principal que orquestra a consulta ao assistente especializado da ANEEL."""
@@ -26,9 +71,12 @@ def consultar_assistente_aneel(pergunta_usuario: str) -> tuple[str, list[Documen
     # ---------------------------------------------------------
     
     # 1. Recuperador Vetorial (ChromaDB + Gemini)
-    caminho_banco_vetorial = DIRETORIO_CHROMA
-    embeddings_google = GoogleGenerativeAIEmbeddings(model=MODEL_EMBEDDING)
-    banco_vetorial = Chroma(persist_directory=caminho_banco_vetorial, embedding_function=embeddings_google)
+    embeddings, caminho_banco_vetorial, embedding_ativo = selecionar_embedding()
+    print(f"Embedding selecionado: {embedding_ativo}")
+    banco_vetorial = Chroma(
+        persist_directory=caminho_banco_vetorial,
+        embedding_function=embeddings,
+    )
     
     retriever_vetorial = banco_vetorial.as_retriever(
         search_type="mmr", 

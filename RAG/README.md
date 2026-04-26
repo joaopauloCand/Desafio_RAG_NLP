@@ -37,7 +37,15 @@ Crie um `.env` na raiz do projeto com:
 
 ```env
 GEMINI_API_KEY="sua_chave_aqui"
+EMBEDDING_MODEL="GEMINI"
 ```
+
+Valor aceito em `EMBEDDING_MODEL`:
+
+- `GEMINI` (ou não declarado): usa embeddings Gemini e banco `banco_chroma/`.
+- `BAAI/bge-m3`: usa embeddings open source e banco `banco_chroma_bgem3/`.
+
+O retrieval continua híbrido (BM25 + vetorial) sem mudanças.
 
 ### 2) Serviços e dados
 
@@ -52,6 +60,8 @@ GEMINI_API_KEY="sua_chave_aqui"
 - modelo generativo: `gemini-2.5-flash`
 - URL Elasticsearch: `http://localhost:9200`
 - índice Elasticsearch: `aneel_lexical`
+
+Quando `EMBEDDING_MODEL="BAAI/bge-m3"`, o diretório vetorial passa a ser `banco_chroma_bgem3`.
 
 ## Execução
 

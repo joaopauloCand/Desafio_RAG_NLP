@@ -240,8 +240,35 @@ O projeto inclui um setup com duas estratégias:
 Execução padrão:
 
 ```bash
+python setup/setup.py
+```
+
+Compatibilidade legada mantida:
+
+```bash
 python setup.py
 ```
+
+Seleção de rota de embedding no setup:
+
+- padrão (se não definir nada): GEMINI
+- alternativo: BAAI/bge-m3
+
+Exemplo no `.env` (ou variável de ambiente do sistema):
+
+```env
+EMBEDDING_MODEL="BAAI/bge-m3"
+```
+
+Quando `EMBEDDING_MODEL="BAAI/bge-m3"`, o setup usa `embedding_os/embedding_os.py` na etapa de embedding.
+Se o valor for inválido, o setup volta automaticamente para GEMINI.
+
+No fluxo padrão de setup (`python setup.py`), o download do banco vetorial também segue `EMBEDDING_MODEL`:
+
+- `GEMINI`: baixa e prepara `banco_chroma`.
+- `BAAI/bge-m3`: baixa e prepara `banco_chroma_bgem3`.
+
+Obs.: o link de download do banco vetorial `BAAI/bge-m3` está com placeholder em `setup.py` (`URL_DOWNLOAD_BANCO_BGE_M3`) e deve ser preenchido quando o artefato estiver disponível no Hugging Face.
 
 Execução a partir de uma etapa específica:
 
