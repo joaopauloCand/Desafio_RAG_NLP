@@ -240,7 +240,7 @@ docker-compose up -d
 
 ### 2. Prepare os Dados (Sequencialmente)
 
-#### Opção A: Setup Automatizado (`setup.py`)
+#### Opção A: [Setup automático](setup\README.md) (`setup.py`)
 
 O projeto inclui um setup com duas estratégias:
 
