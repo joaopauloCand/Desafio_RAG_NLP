@@ -297,6 +297,7 @@ Observações do modo `--from-*`:
 - ideal para retomar execução sem repetir todo o bootstrap.
 
 Para mais detalhes: 
+
 **Veja:** [setup/README.md](setup/README.md)
 #### Opção B: Exemplo Execução Manual por Etapas (Gemini)
 
