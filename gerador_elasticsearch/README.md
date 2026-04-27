@@ -51,6 +51,9 @@ A lista completa de dependências está em `requirements.txt`.
 Na raiz do projeto, execute:
 
 ```bash
+# Caso ainda não tenha realizado o comando:
+docker-compose up -d 
+# Depois:
 python gerador_elasticsearch/gerador_elasticsearch.py
 ```
 

@@ -1,6 +1,8 @@
 # 🚀 Setup e Orquestração do RAG ANEEL
 
-Este diretório concentra o script `setup.py`, ele é um orquestrador desenhado para preparar o ambiente de Inteligência Artificial, gerenciar bancos de dados vetoriais e provisionar a infraestrutura local (Docker).
+Este diretório concentra o script `setup.py`, um orquestrador para preparar o ambiente de IA, gerir bancos vetoriais e executar o pipeline por etapas.
+
+**Importante**: primeiro baixe as depedências em requirements.txt na raiz.
 
 ---
 
@@ -14,19 +16,19 @@ Este diretório concentra o script `setup.py`, ele é um orquestrador desenhado 
 ## ⚙️ O Que Este Script Faz?
 
 Dependendo de como é executado, o `setup.py` gerencia automaticamente:
-1. **Verificação de Ambiente:** Valida a presença do Python, Docker e chaves de API (`GOOGLE_API_KEY`).
+1. **Verificação de Ambiente:** Valida dependências e chaves de API (`GEMINI_API_KEY`, com compatibilidade para `GOOGLE_API_KEY` no embedding).
 2. **Gestão de Dependências:** instalação das bibliotecas corretas (PyTorch, LangChain, HuggingFace, etc.).
 3. **Download de Artefatos:** Baixa os bancos vetoriais pré-processados (Gemini e BGE-M3) e *chunks* diretamente do Hugging Face.
 4. **Execução de Pipeline ML:** Fatiamento de textos (*Chunking*) e criação de vetores (*Embedding*).
-5. **Infraestrutura Lexical:** Levanta o banco de dados Elasticsearch utilizando Docker Compose.
+5. **Infraestrutura Lexical:** Executa a etapa de indexação no Elasticsearch.
 
 ---
 
 ## 🛠️ Como Executar
 
-Antes de iniciar, certifique-se que você tem o **Docker Desktop** no seu computador e que o ficheiro `.env` contém a sua chave da API.
+Antes de iniciar, certifique-se de que o ficheiro `.env` contém a sua chave da API e que as dependências da raiz já foram instaladas.
 
-Lembre-se também de executar **'docker-compose up -d** para carregar e criar a imagem Docker necessária para nossa aplicação Elasticsearch.
+Para a etapa de Elasticsearch, mantenha seu ambiente Docker/Elasticsearch disponível localmente antes de executar o setup.
 
 A partir da raiz do projeto (`Desafio_RAG_NLP`), você tem três abordagens principais:
 
@@ -44,6 +46,13 @@ Para validar se a arquitetura está a funcionar sem gastar horas a vetorizar a b
 ```bash
 python setup/setup.py --testar-pipeline
 ```
+
+> **Atenção:** se você pretende usar GPU na fase de `embedding_os`, aplique as modificações descritas em [embedding_os/README.md](../embedding_os/README.md). É lá que estão os ajustes necessários para alternar para `cuda` e adequar o consumo de memória.
+
+Comportamento de checkpoint no modo de teste:
+
+- se o banco vetorial ainda não existir, o setup ajusta `embedding_checkpoint.txt` para `0`;
+- se o banco vetorial já existir, o checkpoint atual é preservado para retomar progresso sem retrabalho.
 
 ### 3. Recriação Completa
 Ideal para processar a base de dados inteira do zero. Utilizando as *flags* `--from-*`, você diz ao script para ignorar os downloads dos bancos prontos e reprocessar os dados localmente, etapa por etapa.
@@ -74,7 +83,7 @@ Abaixo estão todos os parâmetros aceitos pelo script de orquestração para pe
 
 | Comando / Flag | Descrição do Fluxo Executado |
 | :--- | :--- |
-| `(sem flags)` | **Fluxo Padrão (Produção):** Baixa os bancos de dados prontos da nuvem, extrai, instala bibliotecas e sobe a infraestrutura. |
+| `(sem flags)` | **Fluxo Padrão (Produção):** Baixa os bancos de dados prontos da nuvem, extrai, instala bibliotecas e executa a etapa de Elasticsearch (com serviço já ativo). |
 | `-h, --help` | Exibe a mensagem de ajuda e sai. |
 | `--testar-pipeline` | Seleciona 25 JSONs aleatórios em `json_parsed` e executa um teste rápido do fluxo completo (*chunking* ➔ *embedding* ➔ *elasticsearch*). |
 | `--from-download-jsons`| Inicia no download de JSONs parseados. |
@@ -85,14 +94,18 @@ Abaixo estão todos os parâmetros aceitos pelo script de orquestração para pe
 | `--from-embedding` | Inicia na etapa de embedding (fluxo: *embedding* ➔ *elasticsearch*). |
 | `--from-elasticsearch` | Inicia na etapa de indexação no Elasticsearch. |
 
+Observação adicional sobre checkpoint:
+
+- no fluxo padrão (sem flags), o setup restaura `embedding_checkpoint.txt` para `297858`.
+
 ---
 
 ## 🚨 Solução de Problemas Comuns
 
 * **Erro: "Chave API não encontrada"**
-  Verifique se o ficheiro `.env` está na raiz do projeto e contém `GOOGLE_API_KEY=sua_chave_aqui`.
+  Verifique se o ficheiro `.env` está na raiz do projeto e contém `GEMINI_API_KEY=sua_chave_aqui`.
 * **Erro: "Docker Compose failed" ou "Connection Refused"**
-  O Docker não está a rodar. Abra o aplicativo Docker Desktop e tente rodar o script novamente.
+  O Elasticsearch não está acessível localmente. Garanta Docker/Elasticsearch ativos e tente novamente.
 * **Erro de Memória (GPU/OOM)**
   Se usar a *flag* `--from-embedding` ou `--testar-pipeline` com um modelo pesado (como o BGE-M3), certifique-se de que o seu hardware suporta o `batch_size` configurado.
 ```

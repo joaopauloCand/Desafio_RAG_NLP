@@ -22,6 +22,11 @@ pip install -r embedding_os/requirements_cuda.txt
 python embedding_os/embedding_os.py
 ```
 
+Para usar GPU com segurança, verifique estes pontos no `embedding_os.py`:
+- `DISPOSITIVO`: troque de `cpu` para `cuda`.
+- `TAMANHO_LOTE`: reduza se a GPU tiver pouca VRAM ou se ocorrer OOM.
+- `encode_kwargs`: ajuste `batch_size` para um valor menor caso a alocacao de memoria fique alta.
+
 ## Comportamento de resiliencia
 - Retoma progresso pelo arquivo `embedding_checkpoint_os.txt`.
 - Processa em lotes para evitar alto consumo de memoria.

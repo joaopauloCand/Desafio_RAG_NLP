@@ -55,6 +55,8 @@ GEMINI_API_KEY="sua_chave_aqui"
 
 O script carrega automaticamente o `.env` com `load_dotenv()`.
 
+Compatibilidade: se `GEMINI_API_KEY` não estiver definida, o script também aceita `GOOGLE_API_KEY`.
+
 ## Execução
 
 Na raiz do projeto, execute:

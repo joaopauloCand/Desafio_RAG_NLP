@@ -20,7 +20,7 @@ Desenvolvido para um desafio do Grupo de Estudos de NLP da Universidade Federal 
 - 🧹 Normaliza e limpa metadados dos registros
 - 📄 Extrai texto dos documentos com abordagem híbrida
 - ✂️ Divide os textos em chunks estruturados com overlap
-- 🧠 Gera embeddings vetoriais com Google Gemini
+- 🧠 Gera embeddings vetoriais com Google Gemini ou BGE-M3
 - 🔎 Indexa os chunks lexicalmente no Elasticsearch
 - 💬 Consulta o RAG de forma interativa via terminal
 - 📚 Retorna respostas com citações de fontes e metadados
@@ -56,7 +56,7 @@ ChromaDB (Banco Vetorial)        +      Índice BM25
 ## 📂 Estrutura de Diretórios
 
 ```
-NLP/
+Desafio_RAG_NLP/
 ├── parsing/                      # Coleta, limpeza e extração de texto
 │   ├── scrapping/
 │   │   ├── scrapper.py          # Download de PDFs
@@ -68,9 +68,14 @@ NLP/
 │   ├── chunking.py
 │   ├── requirements.txt
 │   └── README.md
-├── embedding/                    # Geração de embeddings vetoriais
+├── embedding/                    # Geração de embeddings vetoriais (Gemini embedding 001)
 │   ├── embedding.py
 │   ├── requirements.txt
+│   └── README.md
+├── embedding_os/                 # Geração de embeddings open source (BAAI/bge-m3)
+│   ├── embedding_os.py
+│   ├── requirements_cpu.txt
+│   ├── requirements_cuda.txt
 │   └── README.md
 ├── gerador_elasticsearch/        # Indexação lexical
 │   ├── gerador_elasticsearch.py
@@ -82,7 +87,7 @@ NLP/
 ├── chunks/                       # Chunks gerados
 ├── banco_chroma/                 # Banco vetorial ChromaDB
 ├── embedding_checkpoint.txt      # Checkpoint do embedding
-├── setup.py                      # Setup automatizado (pode ser necessário mais testes)
+├── setup.py                      # Setup automatizado
 ├── requirements.txt              # Dependências globais
 └── README.md
 ```
@@ -155,20 +160,22 @@ Inclui controle de checkpoints e registro de erros.
 
 ### 5️⃣ Embeddings Vetoriais
 
-**Pasta:** `embedding/`
+**Pastas:** `embedding/` e `embedding_os/`
 
-**Arquivo:** `embedding.py`
+**Arquivos:** `embedding.py` e `embedding_os.py`
 
-Gera embeddings com `GoogleGenerativeAIEmbeddings` (modelo: `models/gemini-embedding-001`).
+Gera embeddings com `GoogleGenerativeAIEmbeddings` (modelo: `models/gemini-embedding-001`) ou com o modelo open source `BAAI/bge-m3`.
 
 - **Entrada:** `chunks/chunks.jsonl`
-- **Saída:** `banco_chroma/` (banco vetorial persistido)
+- **Saída:** `banco_chroma/` ou `banco_chroma_bgem3/` (banco vetorial persistido)
 - **Checkpoint:** `embedding_checkpoint.txt` (para retomar execução)
 
 Processamento em lotes de 100 documentos com retry exponencial.
 
-**Veja:** [embedding/README.md](embedding/README.md)
+> **Nota de atenção:** embora o pipeline também seja compatível com o modelo open source `BAAI/bge-m3`, o fluxo com Gemini é o que oferece a melhor eficiência no contexto deste projeto e foi o mais validado na prática. O modelo open source foi adicionado como alternativa sem custo e para garantir reprodutibilidade total.
 
+**Veja:** [embedding/README.md](embedding/README.md)
+**Veja:** [embedding_os/README.md](embedding_os/README.md)
 ---
 
 ### 6️⃣ Indexação Lexical
@@ -211,21 +218,24 @@ Retorna respostas com citações de fontes e metadados dos documentos consultado
 
 ### Pré-requisitos
 
-- **Python 3.10+**
+- **Python 3.10+** (sistema feito no python:3.12)
 - **Elasticsearch** rodando em `http://localhost:9200`
-- **Google Generative AI API key** (de https://ai.google.dev)
+- **Google Gemini API key** (de https://ai.google.dev)
 
 ### 1. Configuração Inicial
 
 ```bash
 # Acesse o repositório
-cd NLP
+cd Desafio_RAG_NLP
 
 # Crie um arquivo .env na raiz com sua chave de API
 echo 'GEMINI_API_KEY="sua_chave_aqui"' > .env
 
 # Instale as dependências globais
 pip install -r requirements.txt
+
+# Inicia o Docker que irá conter o ElasticSearch
+docker-compose up -d 
 ```
 
 ### 2. Prepare os Dados (Sequencialmente)
@@ -267,8 +277,6 @@ No fluxo padrão de setup (`python setup.py`), o download do banco vetorial tamb
 
 - `GEMINI`: baixa e prepara `banco_chroma`.
 - `BAAI/bge-m3`: baixa e prepara `banco_chroma_bgem3`.
-
-Obs.: o link de download do banco vetorial `BAAI/bge-m3` está com placeholder em `setup.py` (`URL_DOWNLOAD_BANCO_BGE_M3`) e deve ser preenchido quando o artefato estiver disponível no Hugging Face.
 
 Execução a partir de uma etapa específica:
 
