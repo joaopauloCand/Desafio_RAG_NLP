@@ -240,7 +240,7 @@ docker-compose up -d
 
 ### 2. Prepare os Dados (Sequencialmente)
 
-#### Opção A: [Setup automático](setup\README.md) (`setup.py`)
+#### Opção A: Setup Automatizado (`setup.py`)
 
 O projeto inclui um setup com duas estratégias:
 
@@ -295,7 +295,7 @@ Observações do modo `--from-*`:
 - usa o ZIP de `json_parsed` configurado em `URL_DOWNLOAD_JSON_PARSED` dentro de `setup.py`;
 - executa da etapa escolhida até o final (não executa etapas anteriores);
 - ideal para retomar execução sem repetir todo o bootstrap.
-
+**Veja:** [setup/README.md](setup/README.md)
 #### Opção B: Exemplo Execução Manual por Etapas (Gemini)
 
 ```bash
