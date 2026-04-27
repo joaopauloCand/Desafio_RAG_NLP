@@ -117,7 +117,8 @@ pip install -r parsing/requirements.txt
 ## Passo a passo de como foi utilizado nesse pipeline:
 
 > Caso você queira repetir a etapa de parsing (e/ou talvez scrapping também), sinta-se à vontade. Os arquivos necessários serão: ([aneel_pdfs](https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/aneel_pdfs.zip?download=true)) e ([dados_grupo_estudos](https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/dados_grupo_estudos.zip?download=true))
-> Após isso, instale as dependências de parsing:
+
+Após isso, instale as dependências de parsing:
 ```bash
 pip install -r parsing\requirements.txt` 
 ```
