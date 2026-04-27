@@ -85,8 +85,8 @@ Desafio_RAG_NLP/
 │   └── README.md
 ├── json_parsed/                  # Documentos JSON normalizados
 ├── chunks/                       # Chunks gerados
-├── banco_chroma/                 # Banco vetorial ChromaDB
-├── embedding_checkpoint.txt      # Checkpoint do embedding
+├── banco_chroma/                 # Banco vetorial ChromaDB (Gemini)
+├── embedding_checkpoint.txt      # Checkpoint do embedding (Gemini)
 ├── setup.py                      # Setup automatizado
 ├── requirements.txt              # Dependências globais
 └── README.md
@@ -233,6 +233,9 @@ echo 'GEMINI_API_KEY="sua_chave_aqui"' > .env
 
 # Instale as dependências globais
 pip install -r requirements.txt
+
+# Inicia o Docker que irá conter o ElasticSearch
+docker-compose up -d 
 ```
 
 ### 2. Prepare os Dados (Sequencialmente)

@@ -442,7 +442,6 @@ def verificar_api_key()-> bool:
     if env_path.exists():
         with open(env_path, 'r') as f:
             conteudo = f.read()
-            print(conteudo)  # Debug: Verificar o conteúdo do .env
             if "GEMINI_API_KEY" in conteudo and "cole_sua_chave_aqui" not in conteudo:
                 print_status("Chave de API detetada no ficheiro .env.")
                 return True
