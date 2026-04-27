@@ -389,6 +389,40 @@ def definir_checkpoint_embedding(valor: int) -> bool:
         )
         return False
 
+def carregar_checkpoint_embedding() -> int | None:
+    """Lê o checkpoint de embedding atual; retorna None se ausente/inválido."""
+    caminho = Path(ARQUIVO_CHECKPOINT_EMBEDDING)
+    if not caminho.exists():
+        return None
+
+    try:
+        texto = caminho.read_text(encoding="utf-8").strip()
+        return int(texto) if texto else None
+    except Exception:
+        return None
+
+def sincronizar_checkpoint_embedding_banco_importado() -> bool:
+    """Garante checkpoint completo quando o banco vetorial Gemini foi importado."""
+    if obter_embedding_model_setup() != EMBEDDING_MODEL_PADRAO:
+        # O checkpoint embedding_checkpoint.txt pertence ao fluxo Gemini.
+        return True
+
+    if not banco_vetorial_existe():
+        print_status(
+            "Banco vetorial Gemini não encontrado para sincronizar checkpoint de embedding.",
+            False,
+        )
+        return False
+
+    valor_atual = carregar_checkpoint_embedding()
+    if valor_atual == VALOR_CHECKPOINT_EMBEDDING_PADRAO:
+        print_status(
+            f"Checkpoint de embedding já sincronizado em {VALOR_CHECKPOINT_EMBEDDING_PADRAO}."
+        )
+        return True
+
+    return definir_checkpoint_embedding(VALOR_CHECKPOINT_EMBEDDING_PADRAO)
+
 def banco_vetorial_existe() -> bool:
     """Verifica se a pasta do banco vetorial atual já existe."""
     _, _, pasta_banco_nome = obter_config_banco_vetorial_setup()
@@ -603,9 +637,6 @@ def main():
         else:
             if not definir_checkpoint_embedding(0):
                 return
-    elif etapa_inicial is None:
-        if not definir_checkpoint_embedding(VALOR_CHECKPOINT_EMBEDDING_PADRAO):
-            return
 
     if args.testar_pipeline:
         passos = [
@@ -625,6 +656,7 @@ def main():
             ("Download de Dados", baixar_banco_de_dados),
             ("Download de Chunks", baixar_chunks),
             ("Extração de Dados", extrair_banco_de_dados),
+            ("Sincronização do Checkpoint de Embedding", sincronizar_checkpoint_embedding_banco_importado),
             ("Extração de Chunks", extrair_chunks_jsonl),
             ("Verificação de Credenciais", verificar_api_key),
             ("Instalação de Bibliotecas", instalar_dependencias),

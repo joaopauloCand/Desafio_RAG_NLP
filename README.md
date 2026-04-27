@@ -40,7 +40,7 @@ Extração de Texto
        ↓
 Chunking com Overlap
        ↓
-Embeddings Vetoriais (Gemini)    ←→    Indexação Lexical (Elasticsearch)
+Embeddings Vetoriais (Gemini/BGE-M3)    ←→    Indexação Lexical (Elasticsearch)
        ↓                                      ↓
 ChromaDB (Banco Vetorial)        +      Índice BM25
        ↓                                      ↓
@@ -233,9 +233,6 @@ echo 'GEMINI_API_KEY="sua_chave_aqui"' > .env
 
 # Instale as dependências globais
 pip install -r requirements.txt
-
-# Inicia o Docker que irá conter o ElasticSearch
-docker-compose up -d 
 ```
 
 ### 2. Prepare os Dados (Sequencialmente)

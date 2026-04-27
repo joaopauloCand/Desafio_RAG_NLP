@@ -26,6 +26,7 @@ Cada linha deve conter um objeto JSON com pelo menos os campos:
 O resultado da execução é a indexação dos chunks no Elasticsearch no índice:
 
 - `aneel_lexical`
+- `elasticsearch_checkpoint.txt` (checkpoint para evitar reinserção em reexecuções)
 
 ## Configurações principais
 
@@ -35,6 +36,7 @@ Valores definidos no script:
 - URL do Elasticsearch: `http://localhost:9200`
 - nome do índice: `aneel_lexical`
 - arquivo de entrada: `chunks/chunks.jsonl`
+- arquivo de checkpoint: `elasticsearch_checkpoint.txt`
 
 ## Dependências
 
@@ -61,3 +63,4 @@ python gerador_elasticsearch/gerador_elasticsearch.py
 
 - O Elasticsearch precisa estar acessível em `http://localhost:9200` antes da execução.
 - O script calcula o total de chunks para exibir a barra de progresso, então o arquivo JSONL precisa existir e conter linhas válidas.
+- O checkpoint é atualizado a cada lote. Se o script for executado novamente, ele retoma do último chunk salvo e evita duplicar indexação já processada.

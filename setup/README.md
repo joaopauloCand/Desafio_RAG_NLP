@@ -9,8 +9,9 @@ Este diretório concentra o script `setup.py`, um orquestrador para preparar o a
 ## 🏗️ Nota de Arquitetura: A Fase de Parsing
 > **Aviso Importante:** O processo de extração bruta de textos dos PDFs originais da ANEEL (a fase de *Parsing* e OCR) **não** é executado por este script. 
 > 
-> **Porquê?** A etapa de *parsing* é computacionalmente agressiva, sujeita a quebras estruturais de PDFs e adicionaria uma complexidade desnecessária ao *setup* de infraestrutura. Para garantir a estabilidade e reprodutibilidade deste ambiente, o script assume que os documentos já passaram pelo *parser* e consome os dados a partir do formato `.jsonl` estruturado.
+> **Porquê?** A etapa de *parsing* é relativamente complexa por si só, sujeita a quebras estruturais de PDFs e adicionaria uma complexidade demais ao *setup* de infraestrutura. Para garantir a estabilidade e reprodutibilidade deste ambiente, o script assume que os documentos já passaram pelo *parser* e consome os dados a partir do formato `.jsonl` estruturado.
 
+> Caso você queira repetir a etapa de parsing (e/ou talvez scrapping também), sinta-se à vontade. Os arquivos necessários serão: ([aneel_pdfs](https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/aneel_pdfs.zip?download=true)) e ([dados_grupo_estudos](https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/dados_grupo_estudos.zip?download=true))
 ---
 
 ## ⚙️ O Que Este Script Faz?
@@ -96,7 +97,7 @@ Abaixo estão todos os parâmetros aceitos pelo script de orquestração para pe
 
 Observação adicional sobre checkpoint:
 
-- no fluxo padrão (sem flags), o setup restaura `embedding_checkpoint.txt` para `297858`.
+- no fluxo padrão (sem flags), o setup sincroniza `embedding_checkpoint.txt` para `297858` quando a rota de embedding ativa é `GEMINI` e o banco vetorial importado está disponível.
 
 ---
 
@@ -106,7 +107,7 @@ Observação adicional sobre checkpoint:
 ## 🚨 Solução de Problemas Comuns
 
 * **Erro: "Chave API não encontrada"**
-  Verifique se o ficheiro `.env` está na raiz do projeto e contém `GEMINI_API_KEY=sua_chave_aqui`.
+  Verifique se o ficheiro `.env` está na raiz do projeto e contém `GEMINI_API_KEY=sua_chave_aqui`.    
 * **Erro: "Docker Compose failed" ou "Connection Refused"**
   O Elasticsearch não está acessível localmente. Garanta Docker/Elasticsearch ativos e tente novamente.
 * **Erro de Memória (GPU/OOM)**
