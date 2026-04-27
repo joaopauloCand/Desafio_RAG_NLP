@@ -3,6 +3,7 @@
 json_parsed/*
 json_teste/*
 banco_chroma/*
+banco_chroma_bgem3/*
 chunks/*
 *.csv
 *.zip

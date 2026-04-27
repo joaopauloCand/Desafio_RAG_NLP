@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: elasticsearch_aneel
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g" # Limita a RAM a 1GB para não travar o seu PC
+    ports:
+      - "9200:9200"
+    volumes:
+      - aneel_es_data:/usr/share/elasticsearch/data
+
+volumes:
+  aneel_es_data:

@@ -112,7 +112,7 @@ def processar_embeddings(
     embeddings_os = hf_embeddings_cls(
         model_name="BAAI/bge-m3",
         model_kwargs={"device": DISPOSITIVO},
-        encode_kwargs={"normalize_embeddings": True, "batch_size": 16},
+        encode_kwargs={"normalize_embeddings": True, "batch_size": 32},
     )
 
     banco_vetorial = Chroma(

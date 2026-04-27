@@ -1,7 +1,9 @@
 import argparse
+import random
 import os
 import sys
 import zipfile
+import shutil
 import subprocess
 from pathlib import Path
 import requests
@@ -10,7 +12,6 @@ from tqdm import tqdm
 # --- CONFIGURAÇÕES ---
 URL_DOWNLOAD_BANCO_GEMINI = "https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/banco_chroma.zip?download=true"
 URL_DOWNLOAD_BANCO_BGE_M3 = "https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/banco_chroma_bgem3.zip?download=true"
-PLACEHOLDER_URL_BANCO_BGE_M3 = "https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/banco_chroma_bgem3.zip?download=true"
 URL_DOWNLOAD_CHUNKS = "https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/chunks.zip?download=true"
 URL_DOWNLOAD_JSON_PARSED = "https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/json_parsed.zip?download=true"
 NOME_ZIP_BANCO_GEMINI = "banco_chroma.zip"
@@ -26,6 +27,9 @@ REQUISITOS = "requirements.txt"
 REQUISITOS_EMBEDDING_OS_CPU = "embedding_os\\requirements_cpu.txt"
 EMBEDDING_MODEL_PADRAO = "GEMINI"
 EMBEDDING_MODEL_BGE_M3 = "BAAI/bge-m3"
+QTD_JSONS_TESTE_PIPELINE = 25
+ARQUIVO_CHECKPOINT_EMBEDDING = "embedding_checkpoint.txt"
+VALOR_CHECKPOINT_EMBEDDING_PADRAO = 297858
 
 
 def ler_variavel_env_local(chave: str) -> str | None:
@@ -86,13 +90,6 @@ def baixar_banco_de_dados()-> bool:
     url_download, nome_zip_banco, pasta_banco_nome = obter_config_banco_vetorial_setup()
     arquivo_zip = Path(nome_zip_banco)
     pasta_banco = Path(pasta_banco_nome)
-
-    if PLACEHOLDER_URL_BANCO_BGE_M3 in url_download:
-        print_status(
-            "URL_DOWNLOAD_BANCO_BGE_M3 ainda nao foi configurada no setup.py.",
-            False,
-        )
-        return False
 
     # Se a pasta já existir, não precisa baixar nem extrair
     if pasta_banco.exists() and pasta_banco.is_dir():
@@ -315,6 +312,88 @@ def extrair_json_parsed()-> bool:
         print_status(f"Erro ao extrair os JSONs parseados: {e}", False)
         return False
 
+def preparar_jsons_teste_pipeline(qtd_amostra: int = QTD_JSONS_TESTE_PIPELINE) -> bool:
+    """Seleciona aleatoriamente uma amostra de JSONs em json_parsed e remove o restante."""
+    pasta_jsons = Path(PASTA_JSON_PARSED)
+
+    if not pasta_jsons.exists() or not pasta_jsons.is_dir():
+        print_status(f"Pasta '{PASTA_JSON_PARSED}' não encontrada para preparar teste.", False)
+        return False
+
+    arquivos_json = [p for p in pasta_jsons.iterdir() if p.is_file() and p.suffix.lower() == ".json"]
+    total_jsons = len(arquivos_json)
+
+    if total_jsons == qtd_amostra:
+        print_status(
+            f"A pasta '{PASTA_JSON_PARSED}' já contém exatamente {qtd_amostra} JSONs. "
+            "A usar os arquivos atuais para o teste."
+        )
+        print("IDs escolhidos (id_documento_fonte):")
+        for item_id in sorted(p.stem for p in arquivos_json):
+            print(f"  - {item_id}")
+        return True
+
+    if total_jsons < qtd_amostra:
+        print_status(
+            f"Foram encontrados apenas {total_jsons} JSONs em '{PASTA_JSON_PARSED}'. "
+            f"São necessários pelo menos {qtd_amostra} para o teste.",
+            False,
+        )
+        return False
+
+    selecionados = random.sample(arquivos_json, qtd_amostra)
+    nomes_selecionados = {p.name for p in selecionados}
+    ids_selecionados = []
+
+    for arquivo in selecionados:
+        id_documento = arquivo.stem
+        try:
+            with open(arquivo, "r", encoding="utf-8") as f:
+                conteudo = f.read().strip()
+            if conteudo:
+                import json
+                dados = json.loads(conteudo)
+                id_documento = dados.get("id", id_documento)
+        except Exception:
+            pass
+        ids_selecionados.append(id_documento)
+
+    arquivos_removidos = 0
+    for item in pasta_jsons.iterdir():
+        if item.is_file() and item.name not in nomes_selecionados:
+            item.unlink()
+            arquivos_removidos += 1
+        elif item.is_dir():
+            shutil.rmtree(item)
+
+    print_status(f"Amostra de teste preparada com {qtd_amostra} JSONs aleatórios.")
+    print("IDs escolhidos (id_documento_fonte):")
+    for item_id in sorted(ids_selecionados):
+        print(f"  - {item_id}")
+    print_status(f"{arquivos_removidos} arquivos removidos de '{PASTA_JSON_PARSED}'.")
+    return True
+
+def definir_checkpoint_embedding(valor: int) -> bool:
+    """Define o valor do arquivo embedding_checkpoint.txt."""
+    try:
+        with open(ARQUIVO_CHECKPOINT_EMBEDDING, "w", encoding="utf-8") as f:
+            f.write(str(valor))
+        print_status(
+            f"Checkpoint de embedding ajustado para {valor} em '{ARQUIVO_CHECKPOINT_EMBEDDING}'."
+        )
+        return True
+    except Exception as e:
+        print_status(
+            f"Falha ao ajustar '{ARQUIVO_CHECKPOINT_EMBEDDING}': {e}",
+            False,
+        )
+        return False
+
+def banco_vetorial_existe() -> bool:
+    """Verifica se a pasta do banco vetorial atual já existe."""
+    _, _, pasta_banco_nome = obter_config_banco_vetorial_setup()
+    return Path(pasta_banco_nome).exists()
+
 def verificar_api_key()-> bool:
     """Verifica se a GEMINI_API_KEY está configurada no sistema ou no .env."""
     # 1. Tenta Variável de Ambiente do Sistema
@@ -399,7 +478,7 @@ def executar_elasticsearch()-> bool:
         print_status("Indexação no Elasticsearch concluída com sucesso.")
         return True
     except Exception as e:
-        print_status(f"Falha ao executar indexação no Elasticsearch: {e}", False)
+        print_status(f"Falha ao executar indexação no Elasticsearch: {e},\ngaranta que você tenha o Docker instalado e que executou 'docker-compose up -d'", False)
         return False
 
 def obter_passos_chunking_em_diante(etapa_inicial: str) -> list[tuple[str, callable]]:
@@ -438,28 +517,38 @@ def obter_passos_chunking_em_diante(etapa_inicial: str) -> list[tuple[str, calla
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Setup do projeto RAG ANEEL."
+        description="Setup do projeto RAG ANEEL.",
+        formatter_class=lambda prog: argparse.HelpFormatter(
+            prog,
+            max_help_position=30,
+            width=120,
+        ),
+        usage=(
+            "%(prog)s [-h]\n"
+            "                [--from-download-jsons | --from-extract-jsons | --from-credentials | "
+            "--from-install | --from-chunking | --from-embedding | --from-elasticsearch | --testar-pipeline]"
+        ),
     )
     grupo_from = parser.add_mutually_exclusive_group()
     grupo_from.add_argument(
         "--from-download-jsons",
         action="store_true",
-        help="Inicia no download de JSONs parseados (fluxo chunking em diante).",
+        help="Inicia no download de JSONs parseados.",
     )
     grupo_from.add_argument(
         "--from-extract-jsons",
         action="store_true",
-        help="Inicia na extração de JSONs parseados (fluxo chunking em diante).",
+        help="Inicia na extração de JSONs parseados.",
     )
     grupo_from.add_argument(
         "--from-credentials",
         action="store_true",
-        help="Inicia na verificação de credenciais (fluxo chunking em diante).",
+        help="Inicia na verificação de credenciais.",
     )
     grupo_from.add_argument(
         "--from-install",
         action="store_true",
-        help="Inicia na instalação de bibliotecas (fluxo chunking em diante).",
+        help="Inicia na instalação de bibliotecas.",
     )
     grupo_from.add_argument(
         "--from-chunking",
@@ -475,6 +564,11 @@ def main():
         "--from-elasticsearch",
         action="store_true",
         help="Inicia na etapa de indexação no Elasticsearch.",
+    )
+    grupo_from.add_argument(
+        "--testar-pipeline",
+        action="store_true",
+        help="Seleciona 25 JSONs aleatórios em json_parsed e executa o fluxo chunking -> embedding -> elasticsearch.",
     )
     args = parser.parse_args()
     modelo_embedding = obter_embedding_model_setup()
@@ -501,7 +595,30 @@ def main():
     elif args.from_elasticsearch:
         etapa_inicial = "elasticsearch"
 
-    if etapa_inicial is not None:
+    if args.testar_pipeline:
+        if banco_vetorial_existe():
+            print_status(
+                "Banco vetorial já existe. Checkpoint atual de embedding será preservado para retomar progresso."
+            )
+        else:
+            if not definir_checkpoint_embedding(0):
+                return
+    elif etapa_inicial is None:
+        if not definir_checkpoint_embedding(VALOR_CHECKPOINT_EMBEDDING_PADRAO):
+            return
+
+    if args.testar_pipeline:
+        passos = [
+            ("Download de JSONs Parseados", baixar_json_parsed),
+            ("Extração de JSONs Parseados", extrair_json_parsed),
+            ("Seleção Aleatória de JSONs para Teste", preparar_jsons_teste_pipeline),
+            ("Verificação de Credenciais", verificar_api_key),
+            ("Instalação de Bibliotecas", instalar_dependencias),
+            ("Etapa de Chunking", executar_chunking),
+            ("Etapa de Embedding", executar_embedding),
+            ("Etapa de Elasticsearch", executar_elasticsearch),
+        ]
+    elif etapa_inicial is not None:
         passos = obter_passos_chunking_em_diante(etapa_inicial)
     else:
         passos = [
@@ -511,7 +628,7 @@ def main():
             ("Extração de Chunks", extrair_chunks_jsonl),
             ("Verificação de Credenciais", verificar_api_key),
             ("Instalação de Bibliotecas", instalar_dependencias),
-            #("Inicialização da Infraestrutura", gerir_docker)
+            ("Etapa de Elasticsearch", executar_elasticsearch)
         ]
 
     for nome, acao in passos:
@@ -523,6 +640,7 @@ def main():
         print("="*50 + "\n")
 
     print("TUDO PRONTO!")
+    print("Pode executar RAG.py para testar nosso RAG.")
 
 if __name__ == "__main__":
     main()

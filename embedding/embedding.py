@@ -20,6 +20,19 @@ DIRETORIO_CHROMA = "banco_chroma"
 ARQUIVO_CHECKPOINT = "embedding_checkpoint.txt"
 MODEL_EMBEDDING = "models/gemini-embedding-001"
 
+
+def obter_chave_api() -> str | None:
+    """Retorna a chave de API do ambiente (.env ou variáveis do sistema)."""
+    chave = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    if not chave:
+        return None
+
+    chave = chave.strip()
+    if not chave or chave == "cole_sua_chave_aqui":
+        return None
+
+    return chave
+
 try:
     if os.path.exists(TOTAL_CHUNKS_DIRETORIO):
             with open(TOTAL_CHUNKS_DIRETORIO, 'r', encoding='utf-8') as f:
@@ -77,10 +90,19 @@ def gerador_de_lotes(caminho_arquivo: str, linha_inicio: int, tamanho_lote: int)
 def processar_embeddings(arquivo_jsonl: str = ARQUIVO_JSONL, diretorio_chroma: str = DIRETORIO_CHROMA, arquivo_checkpoint: str = ARQUIVO_CHECKPOINT) -> None:
     """Função principal que orquestra o processo de vetorização, utilizando o Google Generative AI Embeddings e o ChromaDB. O processo é robusto, com tratamento de erros e um sistema de retry exponencial para lidar com limites de API, garantindo que o progresso seja salvo a cada lote processado."""
     print("A iniciar Vetorização em Nuvem (Embeddings)...")
+
+    chave_api = obter_chave_api()
+    if not chave_api:
+        print("ERRO: GEMINI_API_KEY/GOOGLE_API_KEY não encontrada. Configure no .env antes de executar.")
+        raise RuntimeError("Chave de API ausente para embeddings Google.")
+
+    # Garante compatibilidade com libs que procuram especificamente GOOGLE_API_KEY.
+    os.environ["GOOGLE_API_KEY"] = chave_api
     
     # Task_type configurado para melhorar a semântica de banco de conhecimento
     embeddings_google = GoogleGenerativeAIEmbeddings(
         model=MODEL_EMBEDDING,
+        google_api_key=chave_api,
         task_type="RETRIEVAL_DOCUMENT" 
     )
     

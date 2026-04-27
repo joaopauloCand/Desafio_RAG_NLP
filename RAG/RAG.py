@@ -14,6 +14,7 @@ import re
 # ==========================================
 
 load_dotenv() # Carrega a chave de API do Google do arquivo .env, se existir
+
 DIRETORIO_CHROMA_GEMINI = "banco_chroma"
 DIRETORIO_CHROMA_BGE_M3 = "banco_chroma_bgem3"
 MODEL_EMBEDDING = "models/gemini-embedding-001"
@@ -21,6 +22,25 @@ MODEL_GENERATIVE = "gemini-2.5-flash"
 DOCKER_ELASTICSEARCH_URL = "http://localhost:9200"
 ELASTICSEARCH_INDEX_NAME = "aneel_lexical"
 
+def obter_chave_api() -> str | None:
+    """Retorna a chave de API do ambiente (.env ou variáveis do sistema)."""
+    chave = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    if not chave:
+        return None
+
+    chave = chave.strip()
+    if not chave or chave == "cole_sua_chave_aqui":
+        return None
+
+    return chave
+
+chave_api = obter_chave_api()
+if not chave_api:
+    print("ERRO: GEMINI_API_KEY/GOOGLE_API_KEY não encontrada. Configure no .env antes de executar.")
+    raise RuntimeError("Chave de API ausente para embeddings Google.")
+
+# Garante compatibilidade com libs que procuram especificamente GOOGLE_API_KEY.
+os.environ["GOOGLE_API_KEY"] = chave_api
 
 def carregar_classe_hf_embeddings():
     """Resolve HuggingFaceEmbeddings em pacotes LangChain novos e antigos."""
