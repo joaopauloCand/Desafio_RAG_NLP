@@ -295,6 +295,8 @@ Observações do modo `--from-*`:
 - usa o ZIP de `json_parsed` configurado em `URL_DOWNLOAD_JSON_PARSED` dentro de `setup.py`;
 - executa da etapa escolhida até o final (não executa etapas anteriores);
 - ideal para retomar execução sem repetir todo o bootstrap.
+
+Para mais detalhes: 
 **Veja:** [setup/README.md](setup/README.md)
 #### Opção B: Exemplo Execução Manual por Etapas (Gemini)
 
