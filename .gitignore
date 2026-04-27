@@ -9,3 +9,7 @@ embedding_checkpoint.txt
 chunks/*
 *.csv
 *.zip
+*.pdf
+jsons_metadata/*
+aneel_pdfs/*
+dados_grupo_estudos/*

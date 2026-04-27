@@ -12,6 +12,12 @@ Este diretório concentra o script `setup.py`, um orquestrador para preparar o a
 > **Porquê?** A etapa de *parsing* é relativamente complexa por si só, sujeita a quebras estruturais de PDFs e adicionaria uma complexidade demais ao *setup* de infraestrutura. Para garantir a estabilidade e reprodutibilidade deste ambiente, o script assume que os documentos já passaram pelo *parser* e consome os dados a partir do formato `.jsonl` estruturado.
 
 > Caso você queira repetir a etapa de parsing (e/ou talvez scrapping também), sinta-se à vontade. Os arquivos necessários serão: ([aneel_pdfs](https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/aneel_pdfs.zip?download=true)) e ([dados_grupo_estudos](https://huggingface.co/datasets/joaopauloCand/Embeddings_RAG_ANEEL/resolve/main/dados_grupo_estudos.zip?download=true))
+> Após isso, instale as dependências de parsing (`pip install -r parsing\requirements.txt`) e então execute os comandos:
+Para transformar cada referência aninhada no json em um arquivo de metadados brutos ainda sem texto:
+* `python .\parsing\clean_and_normalize_metadata.py --i dados_grupo_estudos\dados_grupo_estudos --o clean_metadata`
+Para extrair o texto dos pdfs (Nota: faça esse comando trocando NomeDiretorio pelo nome de cada um dos diretorios em jsons_metadata):
+* `python parsing\extracting_text_mp.py -m jsons_metadata\"NomeDiretorio" -f .\aneel_pdfs\aneel_pdfs -o json_parsed`
+Em caso de dúvida ambos os comandos permitem utilizar `--h` ou `--help` para mais informações.
 ---
 
 ## ⚙️ O Que Este Script Faz?
