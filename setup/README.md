@@ -100,6 +100,9 @@ Observação adicional sobre checkpoint:
 
 ---
 
+* Esse script é **idempotente** pode ser executado quantas vezes quiser.
+* Não é ideal utilizar `--testar-pipeline` depois de realizar um setup padrão.
+
 ## 🚨 Solução de Problemas Comuns
 
 * **Erro: "Chave API não encontrada"**
@@ -108,4 +111,5 @@ Observação adicional sobre checkpoint:
   O Elasticsearch não está acessível localmente. Garanta Docker/Elasticsearch ativos e tente novamente.
 * **Erro de Memória (GPU/OOM)**
   Se usar a *flag* `--from-embedding` ou `--testar-pipeline` com um modelo pesado (como o BGE-M3), certifique-se de que o seu hardware suporta o `batch_size` configurado.
+* **Resultados inesperados**: apesar da grande quantidade de testes realizados com esse script, é provável que alguns bugs ainda estejam presentes. Caso os resultados não façam sentido, ou erros estranhos apareceram considere apagar esses arquivos e recomeçar novamente com um setup limpo, ou apagar os dados gerados no anterior setup e rodar novamente.
 ```

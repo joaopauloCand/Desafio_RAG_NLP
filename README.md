@@ -205,8 +205,8 @@ Sistema RAG completo com recuperação híbrida e interface interativa:
 
 - **Recuperação:** 60% lexical (Elasticsearch BM25) + 40% vetorial (ChromaDB)
 - **LLM:** `gemini-2.5-flash`
-- **Embeddings:** `models/gemini-embedding-001`
-- **Interface:** Terminal interativo com loop de perguntas (nesse protótipo)
+- **Embeddings:** `modelo escolhido no .env`
+- **Interface:** Terminal interativo com loop de perguntas (neste protótipo)
 
 Retorna respostas com citações de fontes e metadados dos documentos consultados.
 
@@ -296,7 +296,7 @@ Observações do modo `--from-*`:
 - executa da etapa escolhida até o final (não executa etapas anteriores);
 - ideal para retomar execução sem repetir todo o bootstrap.
 
-#### Opção B: Execução Manual por Etapas
+#### Opção B: Exemplo Execução Manual por Etapas (Gemini)
 
 ```bash
 # 1. Normalizar metadados
@@ -353,7 +353,7 @@ Algumas pastas possuem seu próprio `requirements.txt`. Para instalar apenas as 
 ```bash
 pip install -r embedding/requirements.txt      # Apenas embedding
 pip install -r chunking/requirements.txt       # Apenas chunking
-pip install -r parsing/requirements.txt
+pip install -r parsing/requirements.txt        #....
 ```
 
 ---
@@ -366,7 +366,7 @@ pip install -r parsing/requirements.txt
 | Normalização | JSON brutos | `json_parsed/` (JSON normalizados) |
 | Extração | PDF/HTML/HTM | JSON com `texto_extraido` e `texto_extraido_md` |
 | Chunking | `json_parsed/` | `chunks/chunks.jsonl` |
-| Embeddings | `chunks/chunks.jsonl` | `banco_chroma/` |
+| Embeddings | `chunks/chunks.jsonl` | `banco_chroma/` ou `banco_chroma_bgem3`|
 | Elasticsearch | `chunks/chunks.jsonl` | Índice `aneel_lexical` |
 | RAG | Pergunta (terminal) | Resposta + Fontes + Metadados |
 
